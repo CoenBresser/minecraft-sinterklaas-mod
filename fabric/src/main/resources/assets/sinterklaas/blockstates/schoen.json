@@ -1,0 +1,34 @@
+{
+ "variants": {
+  "facing=north,gevuld=false": {
+   "model": "sinterklaas:block/schoen"
+  },
+  "facing=north,gevuld=true": {
+   "model": "sinterklaas:block/schoen_gevuld"
+  },
+  "facing=east,gevuld=false": {
+   "model": "sinterklaas:block/schoen",
+   "y": 90
+  },
+  "facing=east,gevuld=true": {
+   "model": "sinterklaas:block/schoen_gevuld",
+   "y": 90
+  },
+  "facing=south,gevuld=false": {
+   "model": "sinterklaas:block/schoen",
+   "y": 180
+  },
+  "facing=south,gevuld=true": {
+   "model": "sinterklaas:block/schoen_gevuld",
+   "y": 180
+  },
+  "facing=west,gevuld=false": {
+   "model": "sinterklaas:block/schoen",
+   "y": 270
+  },
+  "facing=west,gevuld=true": {
+   "model": "sinterklaas:block/schoen_gevuld",
+   "y": 270
+  }
+ }
+}

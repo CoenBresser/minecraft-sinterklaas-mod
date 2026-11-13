@@ -1,0 +1,45 @@
+{
+  "_uitleg": "Hier staan alle zinnen die Sint en de Pieten zeggen, en de gedichtjes uit de pakjes. Dit zijn nog voorlopige zinnen: vervang ze door je eigen tekst. Je mag per spreker zoveel zinnen toevoegen als je wilt.",
+  "praat": {
+    "sint": [
+      "[sint 1] Dag lieve kinderen!",
+      "[sint 2] Ben je wel lief geweest dit jaar?",
+      "[sint 3] Vergeet je schoen niet te zetten."
+    ],
+    "roetveeg": [
+      "[roetveeg 1] Zo, dat was weer een hoge schoorsteen!",
+      "[roetveeg 2] Heb ik nog roet op mijn wang?",
+      "[roetveeg 3] Hallo daar!"
+    ],
+    "hoofd": [
+      "[hoofd 1] Alles onder controle!",
+      "[hoofd 2] Even het grote boek erbij pakken.",
+      "[hoofd 3] Pieten, opletten!"
+    ],
+    "pakjes": [
+      "[pakjes 1] Waar heb ik dat pakje nou gelaten?",
+      "[pakjes 2] Nog honderd pakjes inpakken...",
+      "[pakjes 3] Niet stiekem kijken!"
+    ],
+    "wegwijs": [
+      "[wegwijs 1] Volgens mij moeten we linksaf.",
+      "[wegwijs 2] Ik weet precies waar we zijn. Denk ik.",
+      "[wegwijs 3] Volg mij maar!"
+    ],
+    "koek": [
+      "[koek 1] Wie wil er een pepernoot?",
+      "[koek 2] Mmm, het ruikt hier naar speculaas.",
+      "[koek 3] Vers uit de oven!"
+    ],
+    "malle": [
+      "[malle 1] Oeps!",
+      "[malle 2] Kijk, zonder handen!",
+      "[malle 3] Haha, dat ging bijna goed."
+    ]
+  },
+  "gedichtjes": [
+    "[gedichtje 1] Sint zat te denken, wat zal ik je schenken? Een pakje vol pret, dat is toch wel net!",
+    "[gedichtje 2] Piet klom op het dak, en viel bijna in een zak.",
+    "[grap 3] Waarom heeft Piet altijd haast? Omdat de pepernoten anders op zijn!"
+  ]
+}

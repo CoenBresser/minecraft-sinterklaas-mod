@@ -1,0 +1,16 @@
+// Loader-onafhankelijke spelregels: geen Minecraft- of Fabric-afhankelijkheden.
+// Java 17 als doel, zodat deze laag ook op oudere loaders (bv. Forge 1.20.1) bruikbaar blijft.
+plugins { id 'java-library' }
+group = 'nl.sinterklaas'
+version = project.mod_version
+repositories { mavenCentral() }
+dependencies {
+	// Gson zit al in Minecraft zelf; hier alleen nodig om te compileren en te testen.
+	compileOnly 'com.google.code.gson:gson:2.11.0'
+	testImplementation 'com.google.code.gson:gson:2.11.0'
+	testImplementation platform('org.junit:junit-bom:5.11.4')
+	testImplementation 'org.junit.jupiter:junit-jupiter'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+tasks.withType(JavaCompile).configureEach { it.options.release = 17 }
+test { useJUnitPlatform() }

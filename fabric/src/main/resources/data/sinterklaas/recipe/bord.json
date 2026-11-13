@@ -1,0 +1,15 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "key": {
+  "K": "minecraft:clay_ball",
+  "B": "minecraft:blue_dye"
+ },
+ "pattern": [
+  "KBK"
+ ],
+ "result": {
+  "id": "sinterklaas:bord",
+  "count": 2
+ }
+}

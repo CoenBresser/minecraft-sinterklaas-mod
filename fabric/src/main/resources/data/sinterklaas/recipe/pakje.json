@@ -1,0 +1,13 @@
+{
+ "type": "minecraft:crafting_shapeless",
+ "category": "misc",
+ "ingredients": [
+  "minecraft:paper",
+  "sinterklaas:pepernoot",
+  "sinterklaas:lint"
+ ],
+ "result": {
+  "id": "sinterklaas:pakje",
+  "count": 1
+ }
+}

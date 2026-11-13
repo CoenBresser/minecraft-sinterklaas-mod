@@ -1,0 +1,19 @@
+{
+ "variants": {
+  "pepernoten=0": {
+   "model": "sinterklaas:block/bord_0"
+  },
+  "pepernoten=1": {
+   "model": "sinterklaas:block/bord_1"
+  },
+  "pepernoten=2": {
+   "model": "sinterklaas:block/bord_2"
+  },
+  "pepernoten=3": {
+   "model": "sinterklaas:block/bord_3"
+  },
+  "pepernoten=4": {
+   "model": "sinterklaas:block/bord_4"
+  }
+ }
+}

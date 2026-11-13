@@ -1,0 +1,19 @@
+{
+ "type": "minecraft:crafting_shapeless",
+ "category": "misc",
+ "ingredients": [
+  "sinterklaas:pepernoot",
+  "sinterklaas:pepernoot",
+  "sinterklaas:pepernoot",
+  "sinterklaas:pepernoot",
+  "sinterklaas:pepernoot",
+  "sinterklaas:pepernoot",
+  "sinterklaas:pepernoot",
+  "sinterklaas:pepernoot",
+  "minecraft:paper"
+ ],
+ "result": {
+  "id": "sinterklaas:zakje_pepernoten",
+  "count": 1
+ }
+}

@@ -1,0 +1,10 @@
+{
+ "variants": {
+  "open=false": {
+   "model": "sinterklaas:block/pakje"
+  },
+  "open=true": {
+   "model": "sinterklaas:block/pakje_open"
+  }
+ }
+}

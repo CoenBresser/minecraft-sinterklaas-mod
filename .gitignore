@@ -1,0 +1,6 @@
+.gradle/
+build/
+run/
+*.log
+release/
+textures/piet_onbekend_*

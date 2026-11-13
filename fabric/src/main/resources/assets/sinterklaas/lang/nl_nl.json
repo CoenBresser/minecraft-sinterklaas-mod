@@ -1,0 +1,43 @@
+{
+  "itemGroup.sinterklaas": "Sinterklaas",
+
+  "entity.sinterklaas.sint": "Sinterklaas",
+  "entity.sinterklaas.piet": "Piet",
+  "entity.sinterklaas.piet.roetveeg": "Roetveegpiet",
+  "entity.sinterklaas.piet.hoofd": "Hoofdpiet",
+  "entity.sinterklaas.piet.pakjes": "Pakjespiet",
+  "entity.sinterklaas.piet.wegwijs": "Wegwijspiet",
+  "entity.sinterklaas.piet.koek": "Koekpiet",
+  "entity.sinterklaas.piet.malle": "Malle Pietje",
+
+  "block.sinterklaas.pakje": "Pakje",
+  "block.sinterklaas.schoenpakje": "Pakje uit de schoen",
+  "block.sinterklaas.schoen": "Schoen",
+  "block.sinterklaas.bord": "Bord",
+
+  "item.sinterklaas.pepernoot": "Pepernoot",
+  "item.sinterklaas.zakje_pepernoten": "Zakje pepernoten",
+  "item.sinterklaas.chocoladeletter": "Chocoladeletter",
+  "item.sinterklaas.mijter": "Mijter",
+  "item.sinterklaas.lint": "Lint",
+  "item.sinterklaas.gedichtje": "Gedichtje",
+
+  "item.sinterklaas.sint_spawn_egg": "Spawn-ei van Sinterklaas",
+  "item.sinterklaas.piet_roetveeg_spawn_egg": "Spawn-ei van Roetveegpiet",
+  "item.sinterklaas.piet_hoofd_spawn_egg": "Spawn-ei van Hoofdpiet",
+  "item.sinterklaas.piet_pakjes_spawn_egg": "Spawn-ei van Pakjespiet",
+  "item.sinterklaas.piet_wegwijs_spawn_egg": "Spawn-ei van Wegwijspiet",
+  "item.sinterklaas.piet_koek_spawn_egg": "Spawn-ei van Koekpiet",
+  "item.sinterklaas.piet_malle_spawn_egg": "Spawn-ei van Malle Pietje",
+
+  "bericht.sinterklaas.pakje_te_vroeg": "5 december is het nog niet, je moet even wachten, Piet",
+  "bericht.sinterklaas.schoen_leeg": "De schoen is nog leeg. Kom morgenochtend maar kijken!",
+  "bericht.sinterklaas.schoen_gevuld": "Er zat een pakje in je schoen!",
+  "bericht.sinterklaas.gedichtje": "Er zat een briefje in het pakje: %s",
+
+  "commando.sinterklaas.datum.nu": "Het is voor de pakjes nu %s (echte datum in Nederland).",
+  "commando.sinterklaas.datum.nu_test": "Het is voor de pakjes nu %s (testdatum).",
+  "commando.sinterklaas.datum.gezet": "Testdatum voor de pakjes is nu %s.",
+  "commando.sinterklaas.datum.reset": "Testdatum uit. Het is weer %s.",
+  "commando.sinterklaas.datum.fout": "Dat is geen geldige datum. Gebruik jjjj-mm-dd, bijvoorbeeld 2026-12-05."
+}

@@ -1,0 +1,43 @@
+{
+  "itemGroup.sinterklaas": "Sinterklaas",
+
+  "entity.sinterklaas.sint": "Sinterklaas",
+  "entity.sinterklaas.piet": "Piet",
+  "entity.sinterklaas.piet.roetveeg": "Roetveegpiet",
+  "entity.sinterklaas.piet.hoofd": "Hoofdpiet",
+  "entity.sinterklaas.piet.pakjes": "Pakjespiet",
+  "entity.sinterklaas.piet.wegwijs": "Wegwijspiet",
+  "entity.sinterklaas.piet.koek": "Koekpiet",
+  "entity.sinterklaas.piet.malle": "Malle Pietje",
+
+  "block.sinterklaas.pakje": "Present",
+  "block.sinterklaas.schoenpakje": "Present from the Shoe",
+  "block.sinterklaas.schoen": "Shoe",
+  "block.sinterklaas.bord": "Plate",
+
+  "item.sinterklaas.pepernoot": "Pepernoot",
+  "item.sinterklaas.zakje_pepernoten": "Bag of Pepernoten",
+  "item.sinterklaas.chocoladeletter": "Chocolate Letter",
+  "item.sinterklaas.mijter": "Mitre",
+  "item.sinterklaas.lint": "Ribbon",
+  "item.sinterklaas.gedichtje": "Poem",
+
+  "item.sinterklaas.sint_spawn_egg": "Sinterklaas Spawn Egg",
+  "item.sinterklaas.piet_roetveeg_spawn_egg": "Roetveegpiet Spawn Egg",
+  "item.sinterklaas.piet_hoofd_spawn_egg": "Hoofdpiet Spawn Egg",
+  "item.sinterklaas.piet_pakjes_spawn_egg": "Pakjespiet Spawn Egg",
+  "item.sinterklaas.piet_wegwijs_spawn_egg": "Wegwijspiet Spawn Egg",
+  "item.sinterklaas.piet_koek_spawn_egg": "Koekpiet Spawn Egg",
+  "item.sinterklaas.piet_malle_spawn_egg": "Malle Pietje Spawn Egg",
+
+  "bericht.sinterklaas.pakje_te_vroeg": "5 december is het nog niet, je moet even wachten, Piet",
+  "bericht.sinterklaas.schoen_leeg": "The shoe is still empty. Come back tomorrow morning!",
+  "bericht.sinterklaas.schoen_gevuld": "There was a present in your shoe!",
+  "bericht.sinterklaas.gedichtje": "There was a note in the present: %s",
+
+  "commando.sinterklaas.datum.nu": "For presents, today is %s (real date in the Netherlands).",
+  "commando.sinterklaas.datum.nu_test": "For presents, today is %s (test date).",
+  "commando.sinterklaas.datum.gezet": "Test date for presents is now %s.",
+  "commando.sinterklaas.datum.reset": "Test date off. It is %s again.",
+  "commando.sinterklaas.datum.fout": "That is not a valid date. Use yyyy-mm-dd, for example 2026-12-05."
+}
