@@ -318,6 +318,9 @@ public class ProefTest implements FabricClientGameTest {
 			return sint.isAlive();
 		});
 		ok(sintEr, "spawn-ei van Sint geeft Sint");
+		context.waitTicks(10);
+		ok(server.computeOnServer(s -> s.overworld().getEntitiesOfClass(Sint.class, new AABB(sintPlek).inflate(1)).get(0)
+			.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.HEAD).is(ModItems.MIJTER)), "Sint draagt zijn mijter met baard");
 
 		// Spawnen met ei of commando werkt ook buiten het seizoen
 		server.runCommand("sinterklaas datum 2026-07-01");
@@ -372,6 +375,14 @@ public class ProefTest implements FabricClientGameTest {
 		context.getInput().pressMouse(1);
 		context.waitTicks(15);
 		context.takeScreenshot("fase2-4-praten-na-rechtsklik");
+
+		// Sint van dichtbij: van voren en van opzij
+		server.runCommand("tp @p 6.5 149 5.2 0 -5");
+		context.waitTicks(15);
+		context.takeScreenshot("fase5-1-sint-van-voren");
+		server.runCommand("tp @p 9.0 149 6.5 68 -5");
+		context.waitTicks(15);
+		context.takeScreenshot("fase5-2-sint-van-opzij");
 
 		server.runCommand("tp @p -0.5 149 -0.2 0 30");
 		context.waitTicks(20);
@@ -511,6 +522,9 @@ public class ProefTest implements FabricClientGameTest {
 			server.runCommand("item replace entity @p hotbar." + i + " with sinterklaas:" + hotbar[i]);
 		}
 		server.runCommand("tp @p 0.5 149 -2.5 0 5");
+		context.runOnClient(mc -> mc.options.setCameraType(CameraType.THIRD_PERSON_BACK));
+		context.waitTicks(15);
+		context.takeScreenshot("fase5-3-speler-met-mijter-van-achter");
 		context.runOnClient(mc -> mc.options.setCameraType(CameraType.THIRD_PERSON_FRONT));
 		context.waitTicks(20);
 		context.takeScreenshot("fase2-6-mijter-en-voorwerpen");

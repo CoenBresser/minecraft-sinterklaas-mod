@@ -15,7 +15,7 @@ Voor Minecraft Java 26.2 (Fabric). De nieuwste versie download je bij [Releases]
   - Meestal zitten er pepernoten of koekjes in. Zeldzaam: een chocoladeletter, een mijter, een zakje pepernoten of een spawn-ei van een Piet. Heel zeldzaam: een gedichtje in de chat.
 - **Schoen**: zet een schoen neer en leg er met een rechtsklik een **wortel voor het paard** in. De volgende ochtend (in Minecraft-tijd, dus ook na slapen) ligt er een pakje in; rechtsklik om het te pakken. De wortel is dan op: voor een nieuw pakje moet er een nieuwe wortel in. Zet je je schoen **zonder wortel**, dan ligt er de volgende ochtend alleen een briefje van Piet in...
 - **Pepernoten** en een **bord**: leg tot vier pepernoten op een bord (rechtsklik met een pepernoot). Met een lege hand pak je er weer één af.
-- **Mijter**: draag hem op je hoofd. Hij is lekker hoog en beschermt net zo goed als een ijzeren helm.
+- **Mijter**: draag hem op je hoofd. Hij is lekker hoog, beschermt net zo goed als een ijzeren helm, en er zit een lange witte baard aan. Sint draagt hem zelf ook.
 
 ### Hoe kom je aan pakjes?
 
@@ -92,7 +92,7 @@ De testdatum geldt voor het openen van pakjes én voor het seizoen van Sint en d
 | Wat er in een pakje zit en hoe vaak | `fabric/src/main/resources/data/sinterklaas/loot_table/gameplay/pakje_inhoud.json` |
 | Wat een Piet laat vallen | `.../loot_table/gameplay/piet_cadeau.json` |
 | De kans op een pakje in kisten | `.../loot_table/chests/kist_extra.json` |
-| De plaatjes van Sint, Pieten, pakje, schoen en bord | map `textures/` |
+| De plaatjes van Sint, Pieten, pakje, schoen en bord | map `textures/` (`sint.png` is een gewone speler-skin van 64x64) |
 | Van welke dag tot welke dag pakjes open mogen | `core/src/main/java/nl/sinterklaas/core/PakjesRegels.java` |
 | Wanneer het seizoen begint en hoe snel het drukker wordt | `core/src/main/java/nl/sinterklaas/core/SeizoenRegels.java` |
 | Namen van voorwerpen | `fabric/src/main/resources/assets/sinterklaas/lang/nl_nl.json` |
@@ -116,7 +116,7 @@ De jar staat daarna in `fabric/build/libs/`.
 | `./gradlew build` | Bouwt de jar en draait de tests van de spelregels |
 | `./gradlew :core:test` | Alleen de tests van de spelregels (4 december, 5 december, tijdzone, schoen, seizoen) |
 | `./gradlew :fabric:runClient` | Start Minecraft met de mod om te spelen |
-| `./gradlew :fabric:runClientGameTest` | Automatische proef in een echte client: controleert 76 dingen en maakt screenshots |
+| `./gradlew :fabric:runClientGameTest` | Automatische proef in een echte client: controleert 77 dingen en maakt screenshots |
 | `python3 tools/maak_assets.py` | Maakt modellen, plaatjes, loot-tables en recepten opnieuw |
 
 ### Hoe zit het in elkaar

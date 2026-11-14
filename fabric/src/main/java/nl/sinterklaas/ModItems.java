@@ -44,7 +44,10 @@ public final class ModItems {
 	public static final Item ZAKJE_PEPERNOTEN = registreer(Namen.ZAKJE_PEPERNOTEN, p -> new Item(p.stacksTo(16)));
 
 	// Overig
-	/** De mijter draag je op je hoofd (helm-slot). Hij beschermt net zo goed als een ijzeren helm en slijt niet. */
+	/**
+	 * De mijter draag je op je hoofd (helm-slot). Hij beschermt net zo goed als een ijzeren helm en slijt niet.
+	 * Er zit een lange witte baard aan vast: Sint draagt hem, en een speler met de mijter op krijgt ook een baard.
+	 */
 	public static final double MIJTER_BESCHERMING = 2.0;
 	public static final Item MIJTER = registreer(Namen.MIJTER,
 		p -> new Item(p.stacksTo(1)
