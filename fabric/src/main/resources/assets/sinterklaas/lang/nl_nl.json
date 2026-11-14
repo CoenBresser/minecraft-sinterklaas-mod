@@ -19,6 +19,7 @@
   "item.sinterklaas.zakje_pepernoten": "Zakje pepernoten",
   "item.sinterklaas.chocoladeletter": "Chocoladeletter",
   "item.sinterklaas.mijter": "Mijter",
+  "item.sinterklaas.staf": "Staf van Sinterklaas",
   "item.sinterklaas.lint": "Lint",
   "item.sinterklaas.gedichtje": "Gedichtje",
 
@@ -35,6 +36,8 @@
   "bericht.sinterklaas.schoen_wortel_erin": "De wortel ligt klaar voor het paard. Nu nog een nachtje slapen!",
   "bericht.sinterklaas.schoen_wortel_wacht": "De wortel ligt er nog. Kom morgenochtend maar kijken!",
   "bericht.sinterklaas.schoen_gevuld": "Er zat een pakje in je schoen!",
+  "bericht.sinterklaas.staf_geroepen": "Je roept %s Piet(en). Daar komen ze al aan!",
+  "bericht.sinterklaas.staf_niemand": "Er zijn geen Pieten in de buurt die je staf horen.",
   "bericht.sinterklaas.gedichtje": "Er zat een briefje in het pakje: %s",
 
   "commando.sinterklaas.datum.nu": "Het is voor de pakjes nu %s (echte datum in Nederland).",

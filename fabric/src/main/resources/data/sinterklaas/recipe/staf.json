@@ -1,0 +1,16 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "key": {
+  "G": "minecraft:gold_ingot"
+ },
+ "pattern": [
+  "GG",
+  " G",
+  " G"
+ ],
+ "result": {
+  "id": "sinterklaas:staf",
+  "count": 1
+ }
+}

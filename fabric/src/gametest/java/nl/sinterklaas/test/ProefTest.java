@@ -101,10 +101,19 @@ public class ProefTest implements FabricClientGameTest {
 			server.runCommand("tp @p 0.5 149 0.5 0 29");
 			spel.getConnection().waitForChunksRender();
 
+			// Snel één onderdeel bekijken tijdens het bouwen: PROEF_ALLEEN=staf ./gradlew :fabric:runClientGameTest
+			if (System.getenv("PROEF_ALLEEN") != null && System.getenv("PROEF_ALLEEN").startsWith("staf")) {
+				server.runOnServer(s -> ModEntiteiten.SINT.spawn(s.overworld(), new BlockPos(6, Y, 7), EntitySpawnReason.COMMAND).setNoAi(true));
+				server.runCommand("tp @e[type=sinterklaas:sint] 6.5 149 7.5 180 0");
+				staf(context, server);
+				return;
+			}
+
 			datumregels(context, server);
 			schoen(context, server);
 			bord(server);
 			pietenEnSint(context, server);
+			staf(context, server);
 			lootEnRecepten(server);
 			mijter(context, server);
 			seizoen(context, server);
@@ -285,6 +294,27 @@ public class ProefTest implements FabricClientGameTest {
 		klik(server, p);
 		ok(staat(server, p).getValue(BordBlok.PEPERNOTEN) == 2, "met lege hand pak je er één van het bord");
 		ok(server.computeOnServer(s -> speler(s).getInventory().countItem(ModItems.PEPERNOOT)) == 1, "die pepernoot komt in de inventaris");
+		// Pepernoot eten: als een koekje (2 voedselpunten = 1 hongerpoppetje) plus direct een half hartje
+		server.runCommand("clear @p");
+		server.runCommand("item replace entity @p weapon.mainhand with sinterklaas:pepernoot 3");
+		float[] na = server.computeOnServer(s -> {
+			ServerPlayer sp = speler(s);
+			sp.setHealth(10.0F);
+			sp.getFoodData().setFoodLevel(10);
+			sp.getMainHandItem().finishUsingItem(s.overworld(), sp);
+			return new float[] {sp.getHealth(), sp.getFoodData().getFoodLevel(), sp.getMainHandItem().getCount()};
+		});
+		ok(na[0] == 11.0F, "een pepernoot eten geeft direct een half hartje (10 -> " + na[0] + " gezondheid)");
+		ok(na[1] == 12.0F, "een pepernoot vult net als een koekje één hongerpoppetje (10 -> " + (int) na[1] + ")");
+		ok(na[2] == 2.0F, "de gegeten pepernoot is op (3 -> " + (int) na[2] + ")");
+		boolean metVolleMaag = server.computeOnServer(s -> {
+			ServerPlayer sp = speler(s);
+			sp.getFoodData().setFoodLevel(20);
+			return !sp.canEat(false) && sp.getMainHandItem().get(net.minecraft.core.component.DataComponents.FOOD).canAlwaysEat();
+		});
+		ok(metVolleMaag, "een pepernoot mag je ook met een volle maag eten");
+		server.runOnServer(s -> { speler(s).setHealth(20.0F); speler(s).getFoodData().setFoodLevel(20); });
+
 		server.runCommand("gamemode creative @p");
 		server.runCommand("clear @p");
 		server.runCommand("setblock 2 149 2 sinterklaas:bord[pepernoten=4]");
@@ -318,6 +348,9 @@ public class ProefTest implements FabricClientGameTest {
 			return sint.isAlive();
 		});
 		ok(sintEr, "spawn-ei van Sint geeft Sint");
+		context.waitTicks(10);
+		ok(server.computeOnServer(s -> s.overworld().getEntitiesOfClass(Sint.class, new AABB(sintPlek).inflate(1)).get(0)
+			.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.HEAD).is(ModItems.MIJTER)), "Sint draagt zijn mijter met baard");
 
 		// Spawnen met ei of commando werkt ook buiten het seizoen
 		server.runCommand("sinterklaas datum 2026-07-01");
@@ -373,6 +406,14 @@ public class ProefTest implements FabricClientGameTest {
 		context.waitTicks(15);
 		context.takeScreenshot("fase2-4-praten-na-rechtsklik");
 
+		// Sint van dichtbij: van voren en van opzij
+		server.runCommand("tp @p 6.5 149 5.2 0 -5");
+		context.waitTicks(15);
+		context.takeScreenshot("fase5-1-sint-van-voren");
+		server.runCommand("tp @p 9.0 149 6.5 68 -5");
+		context.waitTicks(15);
+		context.takeScreenshot("fase5-2-sint-van-opzij");
+
 		server.runCommand("tp @p -0.5 149 -0.2 0 30");
 		context.waitTicks(20);
 		context.takeScreenshot("fase2-5-schoen-en-bord");
@@ -417,11 +458,33 @@ public class ProefTest implements FabricClientGameTest {
 		ok(inKisten > 100 && inKisten < 320, "in dorpskisten zit zeldzaam een pakje (" + inKisten + " van 2000 kisten)");
 
 		// Recepten
-		for (String recept : new String[] {"pakje", "lint", "pepernoot", "zakje_pepernoten", "pepernoten_uit_zakje", "chocoladeletter", "schoen", "bord"}) {
+		for (String recept : new String[] {"pakje", "lint", "pepernoot", "zakje_pepernoten", "pepernoten_uit_zakje", "chocoladeletter", "schoen", "bord", "staf"}) {
 			boolean bestaat = server.computeOnServer(s ->
 				s.getRecipeManager().byKey(ResourceKey.create(Registries.RECIPE, SinterklaasMod.id(recept))).isPresent());
 			ok(bestaat, "recept '" + recept + "' is geladen");
 		}
+
+		// Het recept van de staf: 3 goudstaven boven elkaar en eentje links op de bovenste rij
+		boolean stafRecept = server.computeOnServer(s -> {
+			var goud = new ItemStack(net.minecraft.world.item.Items.GOLD_INGOT);
+			var leeg = ItemStack.EMPTY;
+			var rooster = net.minecraft.world.item.crafting.CraftingInput.of(3, 3, List.of(
+				goud, goud, leeg,
+				leeg, goud, leeg,
+				leeg, goud, leeg));
+			var uit = s.getRecipeManager().getRecipeFor(net.minecraft.world.item.crafting.RecipeType.CRAFTING, rooster, s.overworld());
+			return uit.isPresent() && uit.get().value().assemble(rooster).is(ModItems.STAF);
+		});
+		ok(stafRecept, "de staf maak je van 3 goudstaven boven elkaar en eentje links op de bovenste rij");
+		// Het eerdere recept (goudstaaf boven twee stokken) botste met de gouden schep van Minecraft zelf.
+		boolean schepBlijftSchep = server.computeOnServer(s -> {
+			var rooster = net.minecraft.world.item.crafting.CraftingInput.of(1, 3, List.of(
+				new ItemStack(net.minecraft.world.item.Items.GOLD_INGOT), new ItemStack(net.minecraft.world.item.Items.STICK),
+				new ItemStack(net.minecraft.world.item.Items.STICK)));
+			var uit = s.getRecipeManager().getRecipeFor(net.minecraft.world.item.crafting.RecipeType.CRAFTING, rooster, s.overworld());
+			return uit.isPresent() && uit.get().value().assemble(rooster).is(net.minecraft.world.item.Items.GOLDEN_SHOVEL);
+		});
+		ok(schepBlijftSchep, "een goudstaaf boven twee stokken geeft gewoon een gouden schep, geen staf");
 
 		// Elk voorwerp heeft een Nederlandse naam en alle blokken bestaan
 		for (Block blok : new Block[] {ModBlokken.PAKJE, ModBlokken.SCHOENPAKJE, ModBlokken.SCHOEN, ModBlokken.BORD}) {
@@ -496,6 +559,57 @@ public class ProefTest implements FabricClientGameTest {
 		server.runCommand("sinterklaas datum reset");
 	}
 
+	private void staf(ClientGameTestContext context, TestServerContext server) {
+		// Sint houdt zijn staf vast
+		context.waitTicks(110);
+		ok(server.computeOnServer(s -> s.overworld().getEntitiesOfClass(Sint.class, new AABB(new BlockPos(6, Y, 7)).inflate(1)).get(0)
+			.getMainHandItem().is(ModItems.STAF)), "Sint houdt zijn staf vast");
+		server.runCommand("tp @p 6.5 149 4.6 0 0");
+		context.waitTicks(15);
+		context.takeScreenshot("fase6-1-sint-met-staf");
+		server.runCommand("tp @p 9.0 149 6.5 68 -5");
+		context.waitTicks(15);
+		context.takeScreenshot("fase6-1b-sint-met-staf-van-opzij");
+		if ("stafmodel".equals(System.getenv("PROEF_ALLEEN"))) return;
+
+		// Twee Pieten: één dichtbij genoeg om de staf te horen, één te ver weg
+		server.runCommand("tp @p 0.5 149 -3.0 0 5");
+		java.util.UUID dichtbij = server.computeOnServer(s ->
+			ModEntiteiten.PIET.spawn(s.overworld(), new BlockPos(0, Y, 10), EntitySpawnReason.COMMAND).getUUID());
+		java.util.UUID ver = server.computeOnServer(s -> {
+			Piet piet = ModEntiteiten.PIET.spawn(s.overworld(), new BlockPos(40, Y, -3), EntitySpawnReason.COMMAND);
+			piet.setNoAi(true);
+			piet.setNoGravity(true);
+			return piet.getUUID();
+		});
+		context.waitTicks(5);
+		server.runCommand("item replace entity @p weapon.mainhand with sinterklaas:staf");
+		context.waitTicks(5);
+		double afstandVoor = server.computeOnServer(s -> (double) s.overworld().getEntity(dichtbij).distanceTo(speler(s)));
+
+		// Echte rechtsklik met de staf in de hand
+		context.getInput().pressMouse(1);
+		context.waitTicks(5);
+		ok(server.computeOnServer(s -> ((Piet) s.overworld().getEntity(dichtbij)).roeper() == speler(s)),
+			"rechtsklik met de staf roept een Piet op " + Math.round(afstandVoor) + " blokken afstand");
+		ok(server.computeOnServer(s -> ((Piet) s.overworld().getEntity(ver)).roeper() == null),
+			"een Piet op 40 blokken afstand hoort de staf niet");
+		ok(server.computeOnServer(s -> speler(s).getCooldowns().isOnCooldown(speler(s).getMainHandItem())),
+			"na het roepen moet je even wachten voor je opnieuw kunt roepen");
+		context.runOnClient(mc -> mc.options.setCameraType(CameraType.THIRD_PERSON_BACK));
+		context.waitTicks(200);
+		double afstandNa = server.computeOnServer(s -> (double) s.overworld().getEntity(dichtbij).distanceTo(speler(s)));
+		ok(afstandNa < 4.5, "de geroepen Piet is naar de speler toe gelopen (van " + Math.round(afstandVoor) + " naar "
+			+ (Math.round(afstandNa * 10) / 10.0) + " blokken)");
+		context.takeScreenshot("fase6-2-piet-komt-op-de-staf-af");
+		context.runOnClient(mc -> mc.options.setCameraType(CameraType.FIRST_PERSON));
+		context.waitTicks(120);
+		ok(server.computeOnServer(s -> ((Piet) s.overworld().getEntity(dichtbij)).roeper() == null),
+			"na 15 seconden gaat de Piet weer zijn eigen gang");
+		server.runOnServer(s -> { s.overworld().getEntity(dichtbij).discard(); s.overworld().getEntity(ver).discard(); });
+		server.runCommand("clear @p");
+	}
+
 	private void mijter(ClientGameTestContext context, TestServerContext server) {
 		server.runCommand("item replace entity @p armor.head with sinterklaas:mijter");
 		ok(server.computeOnServer(s -> speler(s).getItemBySlot(net.minecraft.world.entity.EquipmentSlot.HEAD).is(ModItems.MIJTER)),
@@ -511,6 +625,9 @@ public class ProefTest implements FabricClientGameTest {
 			server.runCommand("item replace entity @p hotbar." + i + " with sinterklaas:" + hotbar[i]);
 		}
 		server.runCommand("tp @p 0.5 149 -2.5 0 5");
+		context.runOnClient(mc -> mc.options.setCameraType(CameraType.THIRD_PERSON_BACK));
+		context.waitTicks(15);
+		context.takeScreenshot("fase5-3-speler-met-mijter-van-achter");
 		context.runOnClient(mc -> mc.options.setCameraType(CameraType.THIRD_PERSON_FRONT));
 		context.waitTicks(20);
 		context.takeScreenshot("fase2-6-mijter-en-voorwerpen");

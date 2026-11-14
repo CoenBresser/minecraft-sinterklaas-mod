@@ -28,6 +28,8 @@ import net.minecraft.world.level.block.Block;
 import nl.sinterklaas.core.Namen;
 import nl.sinterklaas.core.PietVariant;
 import nl.sinterklaas.item.GedichtjeItem;
+import nl.sinterklaas.item.PepernootItem;
+import nl.sinterklaas.item.StafItem;
 
 public final class ModItems {
 	// Blokken als voorwerp
@@ -37,14 +39,18 @@ public final class ModItems {
 	public static final Item BORD = blokItem(Namen.BORD, ModBlokken.BORD);
 
 	// Lekkers
+	/** Zelfde voedingswaarde als een vanilla koekje, altijd eetbaar, en een half hartje erbij (zie PepernootItem). */
 	public static final Item PEPERNOOT = registreer(Namen.PEPERNOOT,
-		p -> new Item(p.food(new FoodProperties.Builder().nutrition(1).saturationModifier(0.2F).alwaysEdible().build())));
+		p -> new PepernootItem(p.food(new FoodProperties.Builder().nutrition(2).saturationModifier(0.1F).alwaysEdible().build())));
 	public static final Item CHOCOLADELETTER = registreer(Namen.CHOCOLADELETTER,
 		p -> new Item(p.stacksTo(16).food(new FoodProperties.Builder().nutrition(6).saturationModifier(0.5F).alwaysEdible().build())));
 	public static final Item ZAKJE_PEPERNOTEN = registreer(Namen.ZAKJE_PEPERNOTEN, p -> new Item(p.stacksTo(16)));
 
 	// Overig
-	/** De mijter draag je op je hoofd (helm-slot). Hij beschermt net zo goed als een ijzeren helm en slijt niet. */
+	/**
+	 * De mijter draag je op je hoofd (helm-slot). Hij beschermt net zo goed als een ijzeren helm en slijt niet.
+	 * Er zit een lange witte baard aan vast: Sint draagt hem, en een speler met de mijter op krijgt ook een baard.
+	 */
 	public static final double MIJTER_BESCHERMING = 2.0;
 	public static final Item MIJTER = registreer(Namen.MIJTER,
 		p -> new Item(p.stacksTo(1)
@@ -54,6 +60,8 @@ public final class ModItems {
 					new AttributeModifier(SinterklaasMod.id("mijter"), MIJTER_BESCHERMING, AttributeModifier.Operation.ADD_VALUE),
 					EquipmentSlotGroup.HEAD)
 				.build())));
+	/** De staf van Sint: rechtsklik roept de Pieten in de buurt. */
+	public static final Item STAF = registreer(Namen.STAF, p -> new StafItem(p.stacksTo(1)));
 	public static final Item LINT = registreer(Namen.LINT, Item::new);
 	public static final Item GEDICHTJE = registreer(Namen.GEDICHTJE, p -> new GedichtjeItem(p.stacksTo(16)));
 
@@ -79,7 +87,7 @@ public final class ModItems {
 			.icon(() -> new ItemStack(PAKJE))
 			.displayItems((parameters, uitvoer) -> {
 				for (Item item : new Item[] {PAKJE, SCHOENPAKJE, SCHOEN, BORD, PEPERNOOT, ZAKJE_PEPERNOTEN,
-						CHOCOLADELETTER, MIJTER, LINT, GEDICHTJE, SINT_EI}) {
+						CHOCOLADELETTER, MIJTER, STAF, LINT, GEDICHTJE, SINT_EI}) {
 					uitvoer.accept(new ItemStack(item));
 				}
 				for (Item ei : PIET_EIEREN.values()) uitvoer.accept(new ItemStack(ei));
