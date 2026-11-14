@@ -128,6 +128,9 @@ De jar staat daarna in `fabric/build/libs/`.
 
 Versies: Minecraft 26.2, Fabric Loader 0.20.1, Fabric API 0.161.0+26.2, Loom 1.19.4, Gradle 9.8.2.
 
-## Licentie
+## Licentie en meedoen
 
-MIT, zie `LICENSE`.
+De mod valt onder de MIT-licentie (zie `LICENSE`), en dat geldt ook voor de plaatjes. Iedereen mag hem gebruiken, kopiëren en aanpassen.
+
+- **Naam vermelden is verplicht:** laat de copyrightregel en de licentietekst staan, en verwijs het liefst naar https://github.com/CoenBresser/minecraft-sinterklaas-mod.
+- **Bijdragen is een verzoek:** heb je iets verbeterd, stuur het dan graag terug met een pull request. Hoe dat werkt staat in `CONTRIBUTING.md`.

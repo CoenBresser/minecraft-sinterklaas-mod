@@ -5,6 +5,11 @@
   "name": "Sinterklaas",
   "description": "Sint, Pieten, pakjes en pepernoten in Minecraft.",
   "license": "MIT",
+  "contact": {
+    "homepage": "https://github.com/CoenBresser/minecraft-sinterklaas-mod",
+    "sources": "https://github.com/CoenBresser/minecraft-sinterklaas-mod",
+    "issues": "https://github.com/CoenBresser/minecraft-sinterklaas-mod/issues"
+  },
   "environment": "*",
   "entrypoints": {
     "main": ["nl.sinterklaas.SinterklaasMod"],
