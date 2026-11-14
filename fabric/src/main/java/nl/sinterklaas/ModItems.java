@@ -28,6 +28,7 @@ import net.minecraft.world.level.block.Block;
 import nl.sinterklaas.core.Namen;
 import nl.sinterklaas.core.PietVariant;
 import nl.sinterklaas.item.GedichtjeItem;
+import nl.sinterklaas.item.PepernootItem;
 import nl.sinterklaas.item.StafItem;
 
 public final class ModItems {
@@ -38,8 +39,9 @@ public final class ModItems {
 	public static final Item BORD = blokItem(Namen.BORD, ModBlokken.BORD);
 
 	// Lekkers
+	/** Zelfde voedingswaarde als een vanilla koekje, altijd eetbaar, en een half hartje erbij (zie PepernootItem). */
 	public static final Item PEPERNOOT = registreer(Namen.PEPERNOOT,
-		p -> new Item(p.food(new FoodProperties.Builder().nutrition(1).saturationModifier(0.2F).alwaysEdible().build())));
+		p -> new PepernootItem(p.food(new FoodProperties.Builder().nutrition(2).saturationModifier(0.1F).alwaysEdible().build())));
 	public static final Item CHOCOLADELETTER = registreer(Namen.CHOCOLADELETTER,
 		p -> new Item(p.stacksTo(16).food(new FoodProperties.Builder().nutrition(6).saturationModifier(0.5F).alwaysEdible().build())));
 	public static final Item ZAKJE_PEPERNOTEN = registreer(Namen.ZAKJE_PEPERNOTEN, p -> new Item(p.stacksTo(16)));

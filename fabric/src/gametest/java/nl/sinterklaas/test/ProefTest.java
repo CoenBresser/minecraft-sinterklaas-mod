@@ -294,6 +294,27 @@ public class ProefTest implements FabricClientGameTest {
 		klik(server, p);
 		ok(staat(server, p).getValue(BordBlok.PEPERNOTEN) == 2, "met lege hand pak je er één van het bord");
 		ok(server.computeOnServer(s -> speler(s).getInventory().countItem(ModItems.PEPERNOOT)) == 1, "die pepernoot komt in de inventaris");
+		// Pepernoot eten: als een koekje (2 voedselpunten = 1 hongerpoppetje) plus direct een half hartje
+		server.runCommand("clear @p");
+		server.runCommand("item replace entity @p weapon.mainhand with sinterklaas:pepernoot 3");
+		float[] na = server.computeOnServer(s -> {
+			ServerPlayer sp = speler(s);
+			sp.setHealth(10.0F);
+			sp.getFoodData().setFoodLevel(10);
+			sp.getMainHandItem().finishUsingItem(s.overworld(), sp);
+			return new float[] {sp.getHealth(), sp.getFoodData().getFoodLevel(), sp.getMainHandItem().getCount()};
+		});
+		ok(na[0] == 11.0F, "een pepernoot eten geeft direct een half hartje (10 -> " + na[0] + " gezondheid)");
+		ok(na[1] == 12.0F, "een pepernoot vult net als een koekje één hongerpoppetje (10 -> " + (int) na[1] + ")");
+		ok(na[2] == 2.0F, "de gegeten pepernoot is op (3 -> " + (int) na[2] + ")");
+		boolean metVolleMaag = server.computeOnServer(s -> {
+			ServerPlayer sp = speler(s);
+			sp.getFoodData().setFoodLevel(20);
+			return !sp.canEat(false) && sp.getMainHandItem().get(net.minecraft.core.component.DataComponents.FOOD).canAlwaysEat();
+		});
+		ok(metVolleMaag, "een pepernoot mag je ook met een volle maag eten");
+		server.runOnServer(s -> { speler(s).setHealth(20.0F); speler(s).getFoodData().setFoodLevel(20); });
+
 		server.runCommand("gamemode creative @p");
 		server.runCommand("clear @p");
 		server.runCommand("setblock 2 149 2 sinterklaas:bord[pepernoten=4]");
