@@ -2,7 +2,7 @@
 
 Een Minecraft Java-mod met Sint, Pieten, pakjes en pepernoten. Gemaakt door vader en zoon.
 
-**Versie 0.5.0** voor Minecraft Java 26.2 (Fabric).
+Voor Minecraft Java 26.2 (Fabric). De nieuwste versie download je bij [Releases](https://github.com/CoenBresser/minecraft-sinterklaas-mod/releases/latest); wat er per versie is veranderd staat in `CHANGELOG.md`.
 
 ## Wat zit erin
 
@@ -45,7 +45,7 @@ Je hebt nodig: **Minecraft Java Edition 26.2**.
 2. Download **Fabric API** voor 26.2 (versie 0.161.0+26.2 of nieuwer voor 26.2) via https://modrinth.com/mod/fabric-api
 3. Zet deze twee bestanden in je map `mods`:
    - `fabric-api-...+26.2.jar`
-   - `sinterklaas-fabric-0.5.0+mc26.2.jar`
+   - `sinterklaas-fabric-<versie>+mc26.2.jar` van de [nieuwste release](https://github.com/CoenBresser/minecraft-sinterklaas-mod/releases/latest)
 
    De map `mods` vind je hier:
    - Windows: `%appdata%\.minecraft\mods`
@@ -133,4 +133,4 @@ Versies: Minecraft 26.2, Fabric Loader 0.20.1, Fabric API 0.161.0+26.2, Loom 1.1
 De mod valt onder de MIT-licentie (zie `LICENSE`), en dat geldt ook voor de plaatjes. Iedereen mag hem gebruiken, kopiëren en aanpassen.
 
 - **Naam vermelden is verplicht:** laat de copyrightregel en de licentietekst staan, en verwijs het liefst naar https://github.com/CoenBresser/minecraft-sinterklaas-mod.
-- **Bijdragen is een verzoek:** heb je iets verbeterd, stuur het dan graag terug met een pull request. Hoe dat werkt staat in `CONTRIBUTING.md`.
+- **Bijdragen is een verzoek:** heb je iets verbeterd, stuur het dan graag terug. Dat kan alleen met een pull request; hoe dat werkt staat in `CONTRIBUTING.md`.

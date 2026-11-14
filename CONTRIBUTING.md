@@ -19,9 +19,12 @@ Dat geldt voor de code én voor de plaatjes in `textures/`.
 Heb je iets verbeterd of toegevoegd? Deel het dan het liefst hier, zodat iedereen er iets aan heeft:
 
 - **Idee of fout gevonden:** maak een issue aan op GitHub.
-- **Zelf iets gemaakt:** maak een fork, werk op een eigen branch en stuur een pull request.
+- **Zelf iets gemaakt:** dat gaat altijd met een pull request. Rechtstreeks naar `main` pushen kan niet.
 
-### Voor je een pull request stuurt
+### Zo stuur je een pull request
+
+1. Maak een fork van de repository en daarin een eigen branch, bijvoorbeeld `feat/staf-voor-sint`.
+2. Maak je wijziging en controleer hem:
 
 ```bash
 ./gradlew build
@@ -32,6 +35,35 @@ Dat bouwt de mod en draait de tests van de spelregels. Raak je iets in het spel 
 ```bash
 ./gradlew :fabric:runClientGameTest
 ```
+
+3. Open een pull request naar `main`. GitHub draait dan dezelfde controles automatisch (`verify` en `speltest`).
+4. Na een akkoord wordt je pull request gemerged.
+
+### Commitberichten
+
+We schrijven commitberichten in het Nederlands, in de vorm van [Conventional Commits](https://www.conventionalcommits.org/nl/). Daaruit worden het versienummer en `CHANGELOG.md` automatisch gemaakt.
+
+| Begin | Waarvoor | Gevolg voor de versie |
+|---|---|---|
+| `feat:` | iets nieuws in de mod | volgende versie (0.5.0 → 0.6.0) |
+| `fix:` | een fout opgelost | kleine versie (0.5.0 → 0.5.1) |
+| `docs:`, `test:`, `ci:`, `chore:`, `refactor:`, `build:` | uitleg, tests, onderhoud | geen nieuwe versie nodig |
+
+Je mag erbij zetten over welk onderdeel het gaat, bijvoorbeeld:
+
+```
+feat(schoen): leg een wortel in de schoen voor het paard
+fix(pakje): laat het deksel niet door de strik steken
+```
+
+### Hoe een nieuwe versie uitkomt
+
+Dat hoeft niemand met de hand te doen:
+
+1. Na elke merge naar `main` houdt release-please een pull request bij met de naam "chore(main): release ...". Daarin staan het nieuwe versienummer en de bijgewerkte changelog.
+2. Wordt die pull request gemerged, dan maakt GitHub de release aan, bouwt de jar en hangt die aan de release.
+
+Het versienummer in `gradle.properties` wordt daarbij vanzelf bijgewerkt; pas het dus niet zelf aan.
 
 Een paar afspraken:
 

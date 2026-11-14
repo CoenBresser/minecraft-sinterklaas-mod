@@ -1,0 +1,74 @@
+name: ci
+
+on:
+  # ready_for_review is what triggers the game test below for a PR opened as draft:
+  # the default types (opened, synchronize, reopened) don't include it on their own.
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  # Called by the release workflow on every push to main.
+  workflow_call:
+
+jobs:
+  # Builds the mod jar and runs the unit tests of the game rules in core/
+  # (4 and 5 December, time zone, season, shoe).
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Minecraft 26.2 needs Java 25.
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 25
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Build and unit tests
+        run: ./gradlew build
+
+      - name: Upload the mod jar
+        uses: actions/upload-artifact@v4
+        with:
+          name: sinterklaas-mod-jar
+          path: fabric/build/libs/*.jar
+          retention-days: 7
+
+  # Starts a real Minecraft client on a virtual screen and plays through the rules
+  # (fabric/src/gametest). Runs after `verify` so a compile or unit test failure fails
+  # fast without first paying for a full client start.
+  #
+  # Skipped while a PR is still a draft, and on release-please's PR: that one only
+  # touches CHANGELOG.md, gradle.properties and the manifest, on top of a main whose
+  # code already passed here.
+  speltest:
+    needs: verify
+    if: >-
+      github.event_name != 'pull_request' ||
+      (github.event.pull_request.draft == false &&
+      !startsWith(github.head_ref, 'release-please--'))
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 25
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      # The runner has no graphics card: Mesa renders in software.
+      - name: Client game test
+        run: xvfb-run -a --server-args="-screen 0 1280x720x24" ./gradlew :fabric:runClientGameTest
+        env:
+          LIBGL_ALWAYS_SOFTWARE: "1"
+
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: speltest-screenshots
+          path: fabric/build/run/clientGameTest/screenshots/
+          retention-days: 7
+          if-no-files-found: ignore
