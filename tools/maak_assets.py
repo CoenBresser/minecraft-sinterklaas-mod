@@ -444,7 +444,8 @@ def recepten():
             "key": {"L": "minecraft:leather", "S": "minecraft:string"}, "pattern": ["S ", "LL"],
             "result": {"id": "sinterklaas:schoen", "count": 1}})
     schrijf(f"{DATA}/recipe/staf.json", {"type": "minecraft:crafting_shaped", "category": "misc",
-            "key": {"G": "minecraft:gold_ingot", "S": "minecraft:stick"}, "pattern": ["G", "S", "S"],
+            # Bedacht door Niek: drie goudstaven boven elkaar, en eentje links op de bovenste rij (de krul).
+            "key": {"G": "minecraft:gold_ingot"}, "pattern": ["GG", " G", " G"],
             "result": {"id": "sinterklaas:staf", "count": 1}})
     schrijf(f"{DATA}/recipe/bord.json", {"type": "minecraft:crafting_shaped", "category": "misc",
             "key": {"K": "minecraft:clay_ball", "B": "minecraft:blue_dye"}, "pattern": ["KBK"],

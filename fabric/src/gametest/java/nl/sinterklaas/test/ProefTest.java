@@ -464,6 +464,28 @@ public class ProefTest implements FabricClientGameTest {
 			ok(bestaat, "recept '" + recept + "' is geladen");
 		}
 
+		// Het recept van de staf: 3 goudstaven boven elkaar en eentje links op de bovenste rij
+		boolean stafRecept = server.computeOnServer(s -> {
+			var goud = new ItemStack(net.minecraft.world.item.Items.GOLD_INGOT);
+			var leeg = ItemStack.EMPTY;
+			var rooster = net.minecraft.world.item.crafting.CraftingInput.of(3, 3, List.of(
+				goud, goud, leeg,
+				leeg, goud, leeg,
+				leeg, goud, leeg));
+			var uit = s.getRecipeManager().getRecipeFor(net.minecraft.world.item.crafting.RecipeType.CRAFTING, rooster, s.overworld());
+			return uit.isPresent() && uit.get().value().assemble(rooster).is(ModItems.STAF);
+		});
+		ok(stafRecept, "de staf maak je van 3 goudstaven boven elkaar en eentje links op de bovenste rij");
+		// Het eerdere recept (goudstaaf boven twee stokken) botste met de gouden schep van Minecraft zelf.
+		boolean schepBlijftSchep = server.computeOnServer(s -> {
+			var rooster = net.minecraft.world.item.crafting.CraftingInput.of(1, 3, List.of(
+				new ItemStack(net.minecraft.world.item.Items.GOLD_INGOT), new ItemStack(net.minecraft.world.item.Items.STICK),
+				new ItemStack(net.minecraft.world.item.Items.STICK)));
+			var uit = s.getRecipeManager().getRecipeFor(net.minecraft.world.item.crafting.RecipeType.CRAFTING, rooster, s.overworld());
+			return uit.isPresent() && uit.get().value().assemble(rooster).is(net.minecraft.world.item.Items.GOLDEN_SHOVEL);
+		});
+		ok(schepBlijftSchep, "een goudstaaf boven twee stokken geeft gewoon een gouden schep, geen staf");
+
 		// Elk voorwerp heeft een Nederlandse naam en alle blokken bestaan
 		for (Block blok : new Block[] {ModBlokken.PAKJE, ModBlokken.SCHOENPAKJE, ModBlokken.SCHOEN, ModBlokken.BORD}) {
 			ok(Item.BY_BLOCK.containsKey(blok), "blok " + BuiltInRegistries.BLOCK.getKey(blok).getPath() + " heeft een voorwerp");

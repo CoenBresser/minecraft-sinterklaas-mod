@@ -2,13 +2,12 @@
  "type": "minecraft:crafting_shaped",
  "category": "misc",
  "key": {
-  "G": "minecraft:gold_ingot",
-  "S": "minecraft:stick"
+  "G": "minecraft:gold_ingot"
  },
  "pattern": [
-  "G",
-  "S",
-  "S"
+  "GG",
+  " G",
+  " G"
  ],
  "result": {
   "id": "sinterklaas:staf",

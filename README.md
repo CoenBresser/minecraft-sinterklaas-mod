@@ -37,7 +37,7 @@ Voor Minecraft Java 26.2 (Fabric). De nieuwste versie download je bij [Releases]
 | Chocoladeletter (2) | 2 cacaobonen + suiker + emmer melk |
 | Schoen | draad linksboven, 2 leer eronder |
 | Bord (2) | klei, blauwe kleurstof, klei op een rij |
-| Staf | goudstaaf bovenaan, twee stokken eronder |
+| Staf | 3 goudstaven boven elkaar, en eentje links daarvan op de bovenste rij |
 
 ## Installeren (voor spelers)
 
@@ -119,7 +119,7 @@ De jar staat daarna in `fabric/build/libs/`.
 | `./gradlew build` | Bouwt de jar en draait de tests van de spelregels |
 | `./gradlew :core:test` | Alleen de tests van de spelregels (4 december, 5 december, tijdzone, schoen, seizoen) |
 | `./gradlew :fabric:runClient` | Start Minecraft met de mod om te spelen |
-| `./gradlew :fabric:runClientGameTest` | Automatische proef in een echte client: controleert 88 dingen en maakt screenshots |
+| `./gradlew :fabric:runClientGameTest` | Automatische proef in een echte client: controleert 90 dingen en maakt screenshots |
 | `python3 tools/maak_assets.py` | Maakt modellen, plaatjes, loot-tables en recepten opnieuw |
 
 ### Hoe zit het in elkaar
