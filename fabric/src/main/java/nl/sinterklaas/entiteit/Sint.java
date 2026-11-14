@@ -10,12 +10,14 @@ import nl.sinterklaas.core.Namen;
 
 /**
  * Sinterklaas: een gewoon mensfiguur (zelfde vorm als een speler).
- * Hij draagt altijd zijn mijter; daar zit ook zijn lange witte baard aan vast.
+ * Hij draagt altijd zijn mijter (daar zit ook zijn lange witte baard aan vast) en houdt zijn staf vast.
  */
 public class Sint extends SinterklaasFiguur {
 	public Sint(EntityType<? extends Sint> type, Level wereld) {
 		super(type, wereld);
-		this.setDropChance(EquipmentSlot.HEAD, 0.0F);   // de mijter van Sint zelf valt niet
+		// De mijter en de staf van Sint zelf vallen niet.
+		this.setDropChance(EquipmentSlot.HEAD, 0.0F);
+		this.setDropChance(EquipmentSlot.MAINHAND, 0.0F);
 	}
 
 	@Override
@@ -26,10 +28,14 @@ public class Sint extends SinterklaasFiguur {
 	@Override
 	public void aiStep() {
 		super.aiStep();
-		// Sint zonder mijter bestaat niet: zet hem (weer) op, ook bij een Sint uit een oudere versie.
-		if (this.level() instanceof ServerLevel && this.isAlive() && this.tickCount % 100 == 2
-				&& !this.getItemBySlot(EquipmentSlot.HEAD).is(ModItems.MIJTER)) {
-			this.setItemSlot(EquipmentSlot.HEAD, new ItemStack(ModItems.MIJTER));
+		// Sint zonder mijter of staf bestaat niet: geef ze (weer), ook aan een Sint uit een oudere versie.
+		if (this.level() instanceof ServerLevel && this.isAlive() && this.tickCount % 100 == 2) {
+			if (!this.getItemBySlot(EquipmentSlot.HEAD).is(ModItems.MIJTER)) {
+				this.setItemSlot(EquipmentSlot.HEAD, new ItemStack(ModItems.MIJTER));
+			}
+			if (!this.getItemBySlot(EquipmentSlot.MAINHAND).is(ModItems.STAF)) {
+				this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.STAF));
+			}
 		}
 	}
 }

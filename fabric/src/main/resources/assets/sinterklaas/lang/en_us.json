@@ -19,6 +19,7 @@
   "item.sinterklaas.zakje_pepernoten": "Bag of Pepernoten",
   "item.sinterklaas.chocoladeletter": "Chocolate Letter",
   "item.sinterklaas.mijter": "Mitre",
+  "item.sinterklaas.staf": "Sinterklaas' Staff",
   "item.sinterklaas.lint": "Ribbon",
   "item.sinterklaas.gedichtje": "Poem",
 
@@ -35,6 +36,8 @@
   "bericht.sinterklaas.schoen_wortel_erin": "The carrot is ready for the horse. Now sleep for a night!",
   "bericht.sinterklaas.schoen_wortel_wacht": "The carrot is still there. Come back tomorrow morning!",
   "bericht.sinterklaas.schoen_gevuld": "There was a present in your shoe!",
+  "bericht.sinterklaas.staf_geroepen": "You call %s Piet(en). Here they come!",
+  "bericht.sinterklaas.staf_niemand": "No Pieten nearby can hear your staff.",
   "bericht.sinterklaas.gedichtje": "There was a note in the present: %s",
 
   "commando.sinterklaas.datum.nu": "For presents, today is %s (real date in the Netherlands).",

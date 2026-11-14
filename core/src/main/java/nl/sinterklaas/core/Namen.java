@@ -16,6 +16,7 @@ public final class Namen {
 	public static final String ZAKJE_PEPERNOTEN = "zakje_pepernoten";
 	public static final String CHOCOLADELETTER = "chocoladeletter";
 	public static final String MIJTER = "mijter";
+	public static final String STAF = "staf";
 	public static final String LINT = "lint";
 	public static final String GEDICHTJE = "gedichtje";
 

@@ -185,6 +185,37 @@ def mijter_model():
         }})
     schrijf(f"{ASSETS}/items/mijter.json", {"model": {"type": "minecraft:model", "model": "sinterklaas:item/mijter"}})
 
+def staf_model():
+    """De staf van Sint: een lange gouden staf met een krul bovenaan, als 3D-model."""
+    goud, donker = [0, 0, 4, 16], [4, 0, 8, 16]
+    def blok(van, tot, uv=goud):
+        return {"from": van, "to": tot, "faces": {k: {"uv": uv, "texture": "#t"}
+                for k in ("up", "down", "north", "south", "east", "west")}}
+    elementen = [
+        blok([7.25, -16, 7.25], [8.75, 20, 8.75]),        # de lange stok
+        blok([6.75, -16, 6.75], [9.25, -14.5, 9.25], donker),  # dopje onderaan
+        blok([6.5, 19, 6.5], [9.5, 21, 9.5], donker),     # knop onder de krul
+        blok([7.25, 21, 7.25], [8.75, 29, 8.75]),         # omhoog
+        blok([7.25, 29, 2.5], [8.75, 30.5, 8.75]),        # bovenlangs naar voren
+        blok([7.25, 23.5, 2.5], [8.75, 29, 4]),           # omlaag
+        blok([7.25, 23.5, 4], [8.75, 25, 6.5]),           # terug naar binnen
+        blok([7.25, 25, 5], [8.75, 27, 6.5]),             # het puntje van de krul
+    ]
+    hand = {"rotation": [90, 0, 0], "translation": [0, 1, 4], "scale": [0.8, 0.8, 0.8]}
+    schrijf(f"{ASSETS}/models/item/staf.json", {
+        "parent": "minecraft:block/block",
+        "textures": {"t": "sinterklaas:item/staf", "particle": "sinterklaas:item/staf"},
+        "elements": elementen,
+        "display": {
+            "thirdperson_righthand": hand, "thirdperson_lefthand": hand,
+            "firstperson_righthand": {"rotation": [0, 90, 0], "translation": [2, 2, 0], "scale": [0.6, 0.6, 0.6]},
+            "firstperson_lefthand": {"rotation": [0, 90, 0], "translation": [2, 2, 0], "scale": [0.6, 0.6, 0.6]},
+            "gui": {"rotation": [0, 90, 0], "translation": [0, -2.2, 0], "scale": [0.33, 0.33, 0.33]},
+            "ground": {"rotation": [90, 0, 0], "translation": [0, 0, 0], "scale": [0.4, 0.4, 0.4]},
+            "fixed": {"rotation": [0, 90, 0], "translation": [0, -2.2, 0], "scale": [0.33, 0.33, 0.33]},
+        }})
+    schrijf(f"{ASSETS}/items/staf.json", {"model": {"type": "minecraft:model", "model": "sinterklaas:item/staf"}})
+
 # ---------------------------------------------------------------- plaatjes
 
 def teken(naam, rijen, kleuren):
@@ -239,6 +270,9 @@ def item_plaatjes():
         "..gwwwwwrrwwg...", "...ggggggggg....", "................", "................"], papier)
     plat_item("gedichtje")
     # De onderste twee rijen zijn de baard (wit met een paar lichtgrijze plukjes).
+    # De staf: links goud met een lichte streep, rechts donkerder goud voor de knop en het dopje.
+    staf = {"g": (236, 190, 60, 255), "l": (252, 226, 120, 255), "d": (186, 138, 34, 255), "D": (150, 108, 24, 255)}
+    teken("staf", ["glggdDdd" + "gggggggg"] * 16, staf)
     mijter = {"r": (190, 20, 30, 255), "g": (236, 190, 60, 255), "d": (150, 12, 22, 255),
               "w": (248, 248, 244, 255), "v": (222, 222, 216, 255)}
     teken("mijter", [
@@ -409,13 +443,16 @@ def recepten():
     schrijf(f"{DATA}/recipe/schoen.json", {"type": "minecraft:crafting_shaped", "category": "misc",
             "key": {"L": "minecraft:leather", "S": "minecraft:string"}, "pattern": ["S ", "LL"],
             "result": {"id": "sinterklaas:schoen", "count": 1}})
+    schrijf(f"{DATA}/recipe/staf.json", {"type": "minecraft:crafting_shaped", "category": "misc",
+            "key": {"G": "minecraft:gold_ingot", "S": "minecraft:stick"}, "pattern": ["G", "S", "S"],
+            "result": {"id": "sinterklaas:staf", "count": 1}})
     schrijf(f"{DATA}/recipe/bord.json", {"type": "minecraft:crafting_shaped", "category": "misc",
             "key": {"K": "minecraft:clay_ball", "B": "minecraft:blue_dye"}, "pattern": ["KBK"],
             "result": {"id": "sinterklaas:bord", "count": 2}})
 
 if __name__ == "__main__":
     sint_skin()
-    pakje_modellen(); schoen_modellen(); bord_modellen(); mijter_model(); item_plaatjes()
+    pakje_modellen(); schoen_modellen(); bord_modellen(); mijter_model(); staf_model(); item_plaatjes()
     for v in VARIANTEN:
         spawn_ei(f"piet_{v}.png", f"piet_{v}")
     spawn_ei("sint.png", "sint")

@@ -18,7 +18,10 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.loot.LootTable;
 import nl.sinterklaas.SinterklaasMod;
+import java.util.UUID;
+import net.minecraft.world.entity.player.Player;
 import nl.sinterklaas.core.PietVariant;
+import nl.sinterklaas.core.StafRegels;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -37,6 +40,9 @@ public class Piet extends SinterklaasFiguur {
 	private static final int CADEAU_EXTRA = 12000;
 
 	private int cadeauWachttijd;
+	/** Wie deze Piet met de staf heeft geroepen, en hoe lang hij nog komt. Wordt niet opgeslagen. */
+	private UUID roeperId;
+	private int roepTikkenOver;
 
 	public Piet(EntityType<? extends Piet> type, Level wereld) {
 		super(type, wereld);
@@ -49,6 +55,30 @@ public class Piet extends SinterklaasFiguur {
 
 	public void zetVariant(PietVariant variant) {
 		this.entityData.set(VARIANT, variant.id());
+	}
+
+	@Override
+	protected void registerGoals() {
+		super.registerGoals();
+		// Geroepen met de staf gaat voor rondwandelen, maar niet voor schrikken (paniek heeft voorrang 1).
+		this.goalSelector.addGoal(2, new KomNaarRoeperDoel(this));
+	}
+
+	/** De staf heeft geklonken: kom naar deze speler toe. */
+	public void wordGeroepenDoor(Player speler) {
+		this.roeperId = speler.getUUID();
+		this.roepTikkenOver = StafRegels.ROEP_TIKKEN;
+	}
+
+	/** De speler die deze Piet nu roept, of null als niemand hem roept (of de speler weg is). */
+	public @Nullable Player roeper() {
+		if (this.roeperId == null || this.roepTikkenOver <= 0) return null;
+		Player speler = this.level().getPlayerByUUID(this.roeperId);
+		return speler != null && speler.isAlive() ? speler : null;
+	}
+
+	public int roepTikkenOver() {
+		return this.roepTikkenOver;
 	}
 
 	@Override
@@ -78,6 +108,7 @@ public class Piet extends SinterklaasFiguur {
 	@Override
 	public void aiStep() {
 		super.aiStep();
+		if (this.roepTikkenOver > 0 && --this.roepTikkenOver == 0) this.roeperId = null;
 		if (this.level() instanceof ServerLevel wereld && this.isAlive() && --this.cadeauWachttijd <= 0) {
 			this.cadeauWachttijd = CADEAU_MIN + this.random.nextInt(CADEAU_EXTRA);
 			if (this.dropFromGiftLootTable(wereld, CADEAU, this::spawnAtLocation)) {

@@ -95,4 +95,18 @@ class OverigeRegelsTest {
 		assertFalse(teksten.gedichtjes().isEmpty());
 		assertTrue(teksten.zinnen("bestaat-niet").isEmpty());
 	}
+
+	@Test
+	void deStafRoeptAlleenPietenInDeBuurt() {
+		assertTrue(StafRegels.hoortStaf(5));
+		assertTrue(StafRegels.hoortStaf(StafRegels.BEREIK));
+		assertFalse(StafRegels.hoortStaf(StafRegels.BEREIK + 0.1));
+	}
+
+	@Test
+	void eenGeroepenPietLooptTotHijDichtbijIsOfDeTijdOmIs() {
+		assertTrue(StafRegels.moetNogKomen(10, StafRegels.ROEP_TIKKEN));
+		assertFalse(StafRegels.moetNogKomen(StafRegels.DICHTBIJ, 100));   // hij is er
+		assertFalse(StafRegels.moetNogKomen(10, 0));                      // de tijd is om
+	}
 }

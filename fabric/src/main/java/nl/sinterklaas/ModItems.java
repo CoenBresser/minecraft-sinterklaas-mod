@@ -28,6 +28,7 @@ import net.minecraft.world.level.block.Block;
 import nl.sinterklaas.core.Namen;
 import nl.sinterklaas.core.PietVariant;
 import nl.sinterklaas.item.GedichtjeItem;
+import nl.sinterklaas.item.StafItem;
 
 public final class ModItems {
 	// Blokken als voorwerp
@@ -57,6 +58,8 @@ public final class ModItems {
 					new AttributeModifier(SinterklaasMod.id("mijter"), MIJTER_BESCHERMING, AttributeModifier.Operation.ADD_VALUE),
 					EquipmentSlotGroup.HEAD)
 				.build())));
+	/** De staf van Sint: rechtsklik roept de Pieten in de buurt. */
+	public static final Item STAF = registreer(Namen.STAF, p -> new StafItem(p.stacksTo(1)));
 	public static final Item LINT = registreer(Namen.LINT, Item::new);
 	public static final Item GEDICHTJE = registreer(Namen.GEDICHTJE, p -> new GedichtjeItem(p.stacksTo(16)));
 
@@ -82,7 +85,7 @@ public final class ModItems {
 			.icon(() -> new ItemStack(PAKJE))
 			.displayItems((parameters, uitvoer) -> {
 				for (Item item : new Item[] {PAKJE, SCHOENPAKJE, SCHOEN, BORD, PEPERNOOT, ZAKJE_PEPERNOTEN,
-						CHOCOLADELETTER, MIJTER, LINT, GEDICHTJE, SINT_EI}) {
+						CHOCOLADELETTER, MIJTER, STAF, LINT, GEDICHTJE, SINT_EI}) {
 					uitvoer.accept(new ItemStack(item));
 				}
 				for (Item ei : PIET_EIEREN.values()) uitvoer.accept(new ItemStack(ei));

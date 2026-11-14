@@ -101,10 +101,19 @@ public class ProefTest implements FabricClientGameTest {
 			server.runCommand("tp @p 0.5 149 0.5 0 29");
 			spel.getConnection().waitForChunksRender();
 
+			// Snel één onderdeel bekijken tijdens het bouwen: PROEF_ALLEEN=staf ./gradlew :fabric:runClientGameTest
+			if (System.getenv("PROEF_ALLEEN") != null && System.getenv("PROEF_ALLEEN").startsWith("staf")) {
+				server.runOnServer(s -> ModEntiteiten.SINT.spawn(s.overworld(), new BlockPos(6, Y, 7), EntitySpawnReason.COMMAND).setNoAi(true));
+				server.runCommand("tp @e[type=sinterklaas:sint] 6.5 149 7.5 180 0");
+				staf(context, server);
+				return;
+			}
+
 			datumregels(context, server);
 			schoen(context, server);
 			bord(server);
 			pietenEnSint(context, server);
+			staf(context, server);
 			lootEnRecepten(server);
 			mijter(context, server);
 			seizoen(context, server);
@@ -428,7 +437,7 @@ public class ProefTest implements FabricClientGameTest {
 		ok(inKisten > 100 && inKisten < 320, "in dorpskisten zit zeldzaam een pakje (" + inKisten + " van 2000 kisten)");
 
 		// Recepten
-		for (String recept : new String[] {"pakje", "lint", "pepernoot", "zakje_pepernoten", "pepernoten_uit_zakje", "chocoladeletter", "schoen", "bord"}) {
+		for (String recept : new String[] {"pakje", "lint", "pepernoot", "zakje_pepernoten", "pepernoten_uit_zakje", "chocoladeletter", "schoen", "bord", "staf"}) {
 			boolean bestaat = server.computeOnServer(s ->
 				s.getRecipeManager().byKey(ResourceKey.create(Registries.RECIPE, SinterklaasMod.id(recept))).isPresent());
 			ok(bestaat, "recept '" + recept + "' is geladen");
@@ -505,6 +514,57 @@ public class ProefTest implements FabricClientGameTest {
 		context.waitTicks(120);
 		ok(aantalFiguren(server) == 0, "6 december het jaar erna: ook die Piet vertrekt");
 		server.runCommand("sinterklaas datum reset");
+	}
+
+	private void staf(ClientGameTestContext context, TestServerContext server) {
+		// Sint houdt zijn staf vast
+		context.waitTicks(110);
+		ok(server.computeOnServer(s -> s.overworld().getEntitiesOfClass(Sint.class, new AABB(new BlockPos(6, Y, 7)).inflate(1)).get(0)
+			.getMainHandItem().is(ModItems.STAF)), "Sint houdt zijn staf vast");
+		server.runCommand("tp @p 6.5 149 4.6 0 0");
+		context.waitTicks(15);
+		context.takeScreenshot("fase6-1-sint-met-staf");
+		server.runCommand("tp @p 9.0 149 6.5 68 -5");
+		context.waitTicks(15);
+		context.takeScreenshot("fase6-1b-sint-met-staf-van-opzij");
+		if ("stafmodel".equals(System.getenv("PROEF_ALLEEN"))) return;
+
+		// Twee Pieten: één dichtbij genoeg om de staf te horen, één te ver weg
+		server.runCommand("tp @p 0.5 149 -3.0 0 5");
+		java.util.UUID dichtbij = server.computeOnServer(s ->
+			ModEntiteiten.PIET.spawn(s.overworld(), new BlockPos(0, Y, 10), EntitySpawnReason.COMMAND).getUUID());
+		java.util.UUID ver = server.computeOnServer(s -> {
+			Piet piet = ModEntiteiten.PIET.spawn(s.overworld(), new BlockPos(40, Y, -3), EntitySpawnReason.COMMAND);
+			piet.setNoAi(true);
+			piet.setNoGravity(true);
+			return piet.getUUID();
+		});
+		context.waitTicks(5);
+		server.runCommand("item replace entity @p weapon.mainhand with sinterklaas:staf");
+		context.waitTicks(5);
+		double afstandVoor = server.computeOnServer(s -> (double) s.overworld().getEntity(dichtbij).distanceTo(speler(s)));
+
+		// Echte rechtsklik met de staf in de hand
+		context.getInput().pressMouse(1);
+		context.waitTicks(5);
+		ok(server.computeOnServer(s -> ((Piet) s.overworld().getEntity(dichtbij)).roeper() == speler(s)),
+			"rechtsklik met de staf roept een Piet op " + Math.round(afstandVoor) + " blokken afstand");
+		ok(server.computeOnServer(s -> ((Piet) s.overworld().getEntity(ver)).roeper() == null),
+			"een Piet op 40 blokken afstand hoort de staf niet");
+		ok(server.computeOnServer(s -> speler(s).getCooldowns().isOnCooldown(speler(s).getMainHandItem())),
+			"na het roepen moet je even wachten voor je opnieuw kunt roepen");
+		context.runOnClient(mc -> mc.options.setCameraType(CameraType.THIRD_PERSON_BACK));
+		context.waitTicks(200);
+		double afstandNa = server.computeOnServer(s -> (double) s.overworld().getEntity(dichtbij).distanceTo(speler(s)));
+		ok(afstandNa < 4.5, "de geroepen Piet is naar de speler toe gelopen (van " + Math.round(afstandVoor) + " naar "
+			+ (Math.round(afstandNa * 10) / 10.0) + " blokken)");
+		context.takeScreenshot("fase6-2-piet-komt-op-de-staf-af");
+		context.runOnClient(mc -> mc.options.setCameraType(CameraType.FIRST_PERSON));
+		context.waitTicks(120);
+		ok(server.computeOnServer(s -> ((Piet) s.overworld().getEntity(dichtbij)).roeper() == null),
+			"na 15 seconden gaat de Piet weer zijn eigen gang");
+		server.runOnServer(s -> { s.overworld().getEntity(dichtbij).discard(); s.overworld().getEntity(ver).discard(); });
+		server.runCommand("clear @p");
 	}
 
 	private void mijter(ClientGameTestContext context, TestServerContext server) {
