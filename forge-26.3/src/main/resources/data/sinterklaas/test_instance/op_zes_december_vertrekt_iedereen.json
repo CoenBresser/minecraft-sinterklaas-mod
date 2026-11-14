@@ -1,0 +1,7 @@
+{
+ "type": "minecraft:function",
+ "function": "sinterklaas:op_zes_december_vertrekt_iedereen",
+ "environment": "sinterklaas:dec6",
+ "structure": "forge:empty5x5x5",
+ "max_ticks": 250
+}

@@ -1,0 +1,49 @@
+{
+ "type": "minecraft:block",
+ "pools": [
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "sinterklaas:schoen"
+    }
+   ],
+   "condition": {
+    "type": "minecraft:survives_explosion"
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "sinterklaas:schoenpakje"
+    }
+   ],
+   "condition": {
+    "type": "minecraft:match_block",
+    "blocks": "sinterklaas:schoen",
+    "state": {
+     "inhoud": "pakje"
+    }
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:carrot"
+    }
+   ],
+   "condition": {
+    "type": "minecraft:match_block",
+    "blocks": "sinterklaas:schoen",
+    "state": {
+     "inhoud": "wortel"
+    }
+   }
+  }
+ ]
+}

@@ -1,0 +1,7 @@
+{
+ "type": "minecraft:function",
+ "function": "sinterklaas:piet_laat_iets_vallen",
+ "environment": "sinterklaas:dec5",
+ "structure": "forge:empty5x5x5",
+ "max_ticks": 100
+}

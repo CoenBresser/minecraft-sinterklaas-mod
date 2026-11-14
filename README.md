@@ -2,7 +2,7 @@
 
 Een Minecraft Java-mod met Sint, Pieten, pakjes en pepernoten. Gemaakt door vader en zoon.
 
-Voor Minecraft Java 26.2 (Fabric). De nieuwste versie download je bij [Releases](https://github.com/CoenBresser/minecraft-sinterklaas-mod/releases/latest); wat er per versie is veranderd staat in `CHANGELOG.md`.
+Voor Minecraft Java met **Forge**, in twee versies: **26.3** (Forge 66.1.8) en **1.20.1** (Forge 47.4.10). De nieuwste versie download je bij [Releases](https://github.com/CoenBresser/minecraft-sinterklaas-mod/releases/latest); wat er per versie is veranderd staat in `CHANGELOG.md`.
 
 ## Wat zit erin
 
@@ -41,24 +41,34 @@ Voor Minecraft Java 26.2 (Fabric). De nieuwste versie download je bij [Releases]
 
 ## Installeren (voor spelers)
 
-Je hebt nodig: **Minecraft Java Edition 26.2**.
+Je hebt nodig: **Minecraft Java Edition** met **Forge**. Er zijn twee versies van de mod; kies de jar die bij je Minecraft-versie hoort:
 
-1. Installeer **Fabric Loader** voor Minecraft 26.2 met de installer van https://fabricmc.net/use/installer/
-   (kies versie 26.2 en klik op *Install*).
-2. Download **Fabric API** voor 26.2 (versie 0.161.0+26.2 of nieuwer voor 26.2) via https://modrinth.com/mod/fabric-api
-3. Zet deze twee bestanden in je map `mods`:
-   - `fabric-api-...+26.2.jar`
-   - `sinterklaas-fabric-<versie>+mc26.2.jar` van de [nieuwste release](https://github.com/CoenBresser/minecraft-sinterklaas-mod/releases/latest)
+| Minecraft | Forge | Bestand bij de [nieuwste release](https://github.com/CoenBresser/minecraft-sinterklaas-mod/releases/latest) |
+|---|---|---|
+| 26.3 | 66.1.8 of nieuwer voor 26.3 | `sinterklaas-forge-<versie>+mc26.3.jar` |
+| 1.20.1 | 47.4.10 of nieuwer voor 1.20.1 | `sinterklaas-forge-<versie>+mc1.20.1.jar` |
 
-   De map `mods` vind je hier:
+De mod heeft verder niets nodig (geen andere mods of bibliotheken).
+
+### Met CurseForge
+
+1. Maak een profiel (of gebruik een bestaand profiel) met de goede **spelversie** en als modloader **Forge**: `26.3` met `forge-66.1.8`, of `1.20.1` met `forge-47.4.10`.
+2. Klik bij het profiel op de drie puntjes en kies *Open Folder* (*Map openen*).
+3. Zet de jar die bij je versie hoort in de map `mods`.
+4. Start het profiel met *Play*.
+
+Heb je al een wereld in dat profiel (bijvoorbeeld met een stoomboot)? Die blijft gewoon werken: de mod voegt alleen dingen toe.
+
+### Zonder CurseForge
+
+1. Installeer Forge voor jouw Minecraft-versie met de installer van https://files.minecraftforge.net/
+2. Zet de jar in je map `mods`:
    - Windows: `%appdata%\.minecraft\mods`
    - macOS: `~/Library/Application Support/minecraft/mods`
    - Linux: `~/.minecraft/mods`
-4. Start de Minecraft Launcher, kies het profiel **fabric-loader-26.2** en klik op *Spelen*.
+3. Start de Minecraft Launcher, kies het profiel **forge** en klik op *Spelen*.
 
-Minecraft 26.2 gebruikt Java 25. De launcher regelt dat zelf; je hoeft niets apart te installeren.
-
-Samen spelen op een server? Dan moet de mod (en Fabric API) op de server én bij elke speler staan.
+Samen spelen op een server? Dan moet de mod op de server én bij elke speler staan.
 
 ### Uitproberen
 
@@ -92,44 +102,50 @@ De testdatum geldt voor het openen van pakjes én voor het seizoen van Sint en d
 | Wat wil je veranderen? | Welk bestand |
 |---|---|
 | Wat Sint en de Pieten zeggen, de gedichtjes en het briefje in de schoen | `core/src/main/resources/sinterklaas/teksten.json` |
-| Wat er in een pakje zit en hoe vaak | `fabric/src/main/resources/data/sinterklaas/loot_table/gameplay/pakje_inhoud.json` |
-| Wat een Piet laat vallen | `.../loot_table/gameplay/piet_cadeau.json` |
-| De kans op een pakje in kisten | `.../loot_table/chests/kist_extra.json` |
+| Wat er in een pakje zit en hoe vaak | `tools/maak_assets.py` (functie `loot`) |
+| Wat een Piet laat vallen, en de kans op een pakje in kisten | ook `tools/maak_assets.py` (functie `loot`) |
 | De plaatjes van Sint, Pieten, pakje, schoen en bord | map `textures/` (`sint.png` is een gewone speler-skin van 64x64) |
 | Van welke dag tot welke dag pakjes open mogen | `core/src/main/java/nl/sinterklaas/core/PakjesRegels.java` |
 | Wanneer het seizoen begint en hoe snel het drukker wordt | `core/src/main/java/nl/sinterklaas/core/SeizoenRegels.java` |
-| Namen van voorwerpen | `fabric/src/main/resources/assets/sinterklaas/lang/nl_nl.json` |
+| Namen van voorwerpen | `forge-26.3/src/main/resources/assets/sinterklaas/lang/nl_nl.json` (geldt voor beide versies) |
 
-De loot-tables, recepten, modellen en item-plaatjes worden gemaakt door `tools/maak_assets.py`. Pas je iets blijvend aan, doe dat dan in dat script (anders overschrijft het script je wijziging als je het opnieuw draait).
+De loot-tables, recepten, modellen en item-plaatjes worden gemaakt door `tools/maak_assets.py`, voor beide Minecraft-versies tegelijk (die schrijven loot-tables en recepten elk anders op). Pas je iets aan, doe dat dan in dat script en draai het opnieuw; anders overschrijft het script je wijziging.
 
 De zinnen in `teksten.json` zijn nu nog voorlopig (ze beginnen met bijvoorbeeld `[koek 1]`). Vervang ze door je eigen tekst; je mag zoveel zinnen toevoegen als je wilt.
 
 ### Bouwen
 
-Nodig: Java 25 (JDK). Gradle wordt vanzelf gedownload.
+De twee versies worden apart gebouwd, omdat ze elk andere gereedschappen nodig hebben. Gradle wordt vanzelf gedownload.
 
-```bash
-./gradlew build
-```
+| | Minecraft 26.3 | Minecraft 1.20.1 |
+|---|---|---|
+| Map | `forge-26.3/` | `forge-1.20.1/` |
+| Nodig | Java 25 (JDK) | Java 17 (JDK) |
+| Bouwen | `./gradlew build` | `cd forge-1.20.1 && ./gradlew build` |
+| De jar staat in | `forge-26.3/build/libs/` | `forge-1.20.1/build/libs/` |
+| Spelen met de mod | `./gradlew :forge-26.3:runClient` | `cd forge-1.20.1 && ./gradlew runClient` |
+| Speltests op een echte server | `./gradlew :forge-26.3:runGameTestServer` | `cd forge-1.20.1 && ./gradlew runGameTestServer` |
 
-De jar staat daarna in `fabric/build/libs/`.
+Verder:
 
 | Opdracht | Wat doet het |
 |---|---|
-| `./gradlew build` | Bouwt de jar en draait de tests van de spelregels |
 | `./gradlew :core:test` | Alleen de tests van de spelregels (4 december, 5 december, tijdzone, schoen, seizoen) |
-| `./gradlew :fabric:runClient` | Start Minecraft met de mod om te spelen |
-| `./gradlew :fabric:runClientGameTest` | Automatische proef in een echte client: controleert 90 dingen en maakt screenshots |
-| `python3 tools/maak_assets.py` | Maakt modellen, plaatjes, loot-tables en recepten opnieuw |
+| `python3 tools/maak_assets.py` | Maakt modellen, plaatjes, loot-tables, recepten en de testbestanden opnieuw |
+
+De eerste keer bouwen duurt een paar minuten: Forge downloadt en bewerkt dan Minecraft zelf.
 
 ### Hoe zit het in elkaar
 
-- `core/` — de spelregels, zonder Minecraft-code: datumregel, tijdzone, seizoen, schoen, praatpauzes, Piet-varianten, teksten. Los te testen en herbruikbaar op een andere loader.
-- `fabric/` — alles wat met Minecraft/Fabric praat: blokken, items, entiteiten, tekenen, commando.
+- `core/` — de spelregels, zonder Minecraft-code: datumregel, tijdzone, seizoen, schoen, praatpauzes, Piet-varianten, teksten. Los te testen; beide versies gebruiken precies dezelfde regels.
+- `forge-26.3/` — de mod voor Minecraft 26.3: blokken, items, entiteiten, tekenen, commando. Hier staan ook de modellen, blockstates, plaatjes en vertalingen die beide versies delen.
+- `forge-1.20.1/` — dezelfde mod voor Minecraft 1.20.1. De Minecraft-code is daar anders geschreven (Minecraft is tussen die versies sterk veranderd); recepten en loot-tables hebben er hun eigen schrijfwijze.
 - `textures/` — de bronplaatjes (64x64).
 - `tools/` — hulpscript voor afgeleide assets en data.
 
-Versies: Minecraft 26.2, Fabric Loader 0.20.1, Fabric API 0.161.0+26.2, Loom 1.19.4, Gradle 9.8.2.
+Iets nieuws in het spel bouw je dus in **beide** mappen; een nieuwe spelregel hoeft maar één keer, in `core/`.
+
+Versies: Minecraft 26.3 met Forge 66.1.8 (ForgeGradle 7, Gradle 9.8.2, Java 25) en Minecraft 1.20.1 met Forge 47.4.10 (ForgeGradle 6, Gradle 8.8, Java 17).
 
 ## Licentie en meedoen
 

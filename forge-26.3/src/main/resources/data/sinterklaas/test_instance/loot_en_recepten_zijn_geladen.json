@@ -1,0 +1,7 @@
+{
+ "type": "minecraft:function",
+ "function": "sinterklaas:loot_en_recepten_zijn_geladen",
+ "environment": "sinterklaas:dec5",
+ "structure": "forge:empty5x5x5",
+ "max_ticks": 100
+}
