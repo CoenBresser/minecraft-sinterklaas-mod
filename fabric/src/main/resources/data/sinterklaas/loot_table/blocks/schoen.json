@@ -28,7 +28,25 @@
      "condition": "minecraft:block_state_property",
      "block": "sinterklaas:schoen",
      "properties": {
-      "gevuld": "true"
+      "inhoud": "pakje"
+     }
+    }
+   ]
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:carrot"
+    }
+   ],
+   "conditions": [
+    {
+     "condition": "minecraft:block_state_property",
+     "block": "sinterklaas:schoen",
+     "properties": {
+      "inhoud": "wortel"
      }
     }
    ]

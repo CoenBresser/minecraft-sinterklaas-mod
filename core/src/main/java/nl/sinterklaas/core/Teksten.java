@@ -23,10 +23,17 @@ public final class Teksten {
 
 	private final Map<String, List<String>> praat;
 	private final List<String> gedichtjes;
+	private final List<String> schoenZonderWortel;
 
-	public Teksten(Map<String, List<String>> praat, List<String> gedichtjes) {
+	public Teksten(Map<String, List<String>> praat, List<String> gedichtjes, List<String> schoenZonderWortel) {
 		this.praat = praat;
 		this.gedichtjes = gedichtjes;
+		this.schoenZonderWortel = schoenZonderWortel;
+	}
+
+	/** Het briefje van Piet in een schoen zonder wortel, regel voor regel. */
+	public List<String> schoenZonderWortel() {
+		return schoenZonderWortel;
 	}
 
 	/** De zinnen van één spreker: een Piet-variant-id of "sint". */
@@ -58,7 +65,8 @@ public final class Teksten {
 			}
 		}
 		JsonArray gedichtjes = wortel.getAsJsonArray("gedichtjes");
-		return new Teksten(praat, gedichtjes == null ? List.of() : lijst(gedichtjes));
+		JsonArray briefje = wortel.getAsJsonArray("schoen_zonder_wortel");
+		return new Teksten(praat, gedichtjes == null ? List.of() : lijst(gedichtjes), briefje == null ? List.of() : lijst(briefje));
 	}
 
 	private static List<String> lijst(JsonArray array) {

@@ -3,7 +3,10 @@
  "textures": {
   "t": "sinterklaas:block/schoen",
   "p": "sinterklaas:block/pakje",
-  "particle": "sinterklaas:block/schoen"
+  "particle": "sinterklaas:block/schoen",
+  "o": "minecraft:block/orange_concrete",
+  "g": "minecraft:block/moss_block",
+  "w": "minecraft:block/white_concrete"
  },
  "elements": [
   {

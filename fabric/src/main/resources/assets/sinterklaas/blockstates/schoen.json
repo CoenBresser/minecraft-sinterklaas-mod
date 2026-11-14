@@ -1,33 +1,63 @@
 {
  "variants": {
-  "facing=north,gevuld=false": {
+  "facing=north,inhoud=leeg": {
    "model": "sinterklaas:block/schoen"
   },
-  "facing=north,gevuld=true": {
-   "model": "sinterklaas:block/schoen_gevuld"
+  "facing=north,inhoud=pakje": {
+   "model": "sinterklaas:block/schoen_pakje"
   },
-  "facing=east,gevuld=false": {
+  "facing=north,inhoud=wortel": {
+   "model": "sinterklaas:block/schoen_wortel"
+  },
+  "facing=north,inhoud=briefje": {
+   "model": "sinterklaas:block/schoen_briefje"
+  },
+  "facing=east,inhoud=leeg": {
    "model": "sinterklaas:block/schoen",
    "y": 90
   },
-  "facing=east,gevuld=true": {
-   "model": "sinterklaas:block/schoen_gevuld",
+  "facing=east,inhoud=pakje": {
+   "model": "sinterklaas:block/schoen_pakje",
    "y": 90
   },
-  "facing=south,gevuld=false": {
+  "facing=east,inhoud=wortel": {
+   "model": "sinterklaas:block/schoen_wortel",
+   "y": 90
+  },
+  "facing=east,inhoud=briefje": {
+   "model": "sinterklaas:block/schoen_briefje",
+   "y": 90
+  },
+  "facing=south,inhoud=leeg": {
    "model": "sinterklaas:block/schoen",
    "y": 180
   },
-  "facing=south,gevuld=true": {
-   "model": "sinterklaas:block/schoen_gevuld",
+  "facing=south,inhoud=pakje": {
+   "model": "sinterklaas:block/schoen_pakje",
    "y": 180
   },
-  "facing=west,gevuld=false": {
+  "facing=south,inhoud=wortel": {
+   "model": "sinterklaas:block/schoen_wortel",
+   "y": 180
+  },
+  "facing=south,inhoud=briefje": {
+   "model": "sinterklaas:block/schoen_briefje",
+   "y": 180
+  },
+  "facing=west,inhoud=leeg": {
    "model": "sinterklaas:block/schoen",
    "y": 270
   },
-  "facing=west,gevuld=true": {
-   "model": "sinterklaas:block/schoen_gevuld",
+  "facing=west,inhoud=pakje": {
+   "model": "sinterklaas:block/schoen_pakje",
+   "y": 270
+  },
+  "facing=west,inhoud=wortel": {
+   "model": "sinterklaas:block/schoen_wortel",
+   "y": 270
+  },
+  "facing=west,inhoud=briefje": {
+   "model": "sinterklaas:block/schoen_briefje",
    "y": 270
   }
  }

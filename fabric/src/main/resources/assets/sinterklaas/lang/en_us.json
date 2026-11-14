@@ -31,7 +31,9 @@
   "item.sinterklaas.piet_malle_spawn_egg": "Malle Pietje Spawn Egg",
 
   "bericht.sinterklaas.pakje_te_vroeg": "5 december is het nog niet, je moet even wachten, Piet",
-  "bericht.sinterklaas.schoen_leeg": "The shoe is still empty. Come back tomorrow morning!",
+  "bericht.sinterklaas.schoen_leeg": "The shoe is empty. Will you put in a carrot for the horse?",
+  "bericht.sinterklaas.schoen_wortel_erin": "The carrot is ready for the horse. Now sleep for a night!",
+  "bericht.sinterklaas.schoen_wortel_wacht": "The carrot is still there. Come back tomorrow morning!",
   "bericht.sinterklaas.schoen_gevuld": "There was a present in your shoe!",
   "bericht.sinterklaas.gedichtje": "There was a note in the present: %s",
 

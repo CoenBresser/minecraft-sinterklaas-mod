@@ -87,23 +87,36 @@ def schoen_modellen():
         doos(24, 28, 7, 2, 6, (4.5, 9, 8)),      # randje bovenaan
     ]
     weergave = {"gui": {"rotation": [30, 225, 0], "translation": [0, 2, 0], "scale": [0.9, 0.9, 0.9]}}
-    schrijf(f"{ASSETS}/models/block/schoen.json",
-            {"parent": "minecraft:block/block", "textures": tex, "elements": schoen, "display": weergave})
-    # Gevuld: een klein pakje steekt uit de schoen (zijkant van de doos met lint als plaatje).
+    def blokje(van, tot, textuur, uv=(0, 0, 4, 4)):
+        return {"from": van, "to": tot, "faces": {k: {"uv": list(uv), "texture": textuur}
+                for k in ("up", "down", "north", "south", "east", "west")}}
+    # Pakje: een klein pakje steekt uit de schoen (zijkant van de doos met lint als plaatje).
     zij = [12 / 4, 12 / 4, 24 / 4, 21 / 4]
     boven = [12 / 4, 0, 24 / 4, 12 / 4]
     mini = {"from": [5.5, 10, 8.5], "to": [10.5, 14.5, 13.5],
             "faces": {k: {"uv": (boven if k in ("up", "down") else zij), "texture": "#p"}
                       for k in ("up", "down", "north", "south", "east", "west")}}
-    schrijf(f"{ASSETS}/models/block/schoen_gevuld.json",
-            {"parent": "minecraft:block/block", "textures": tex, "elements": schoen + [mini], "display": weergave})
+    # Wortel: oranje stukje met groen loof steekt uit de schoen.
+    wortel = [blokje([7, 9.5, 10], [9, 13, 12], "#o"), blokje([6.5, 13, 9.5], [9.5, 15, 12.5], "#g")]
+    # Briefje: een wit velletje steekt schuin uit de schoen.
+    briefje = [dict(blokje([6, 9.5, 10.75], [10, 15, 11.25], "#w"),
+                    rotation={"angle": 22.5, "axis": "z", "origin": [8, 10, 11]})]
+    extra = {"leeg": [], "pakje": [mini], "wortel": wortel, "briefje": briefje}
+    tex.update({"o": "minecraft:block/orange_concrete", "g": "minecraft:block/moss_block", "w": "minecraft:block/white_concrete"})
+    for inhoud, elementen in extra.items():
+        naam = "schoen" if inhoud == "leeg" else f"schoen_{inhoud}"
+        schrijf(f"{ASSETS}/models/block/{naam}.json",
+                {"parent": "minecraft:block/block", "textures": tex, "elements": schoen + elementen, "display": weergave})
+    oud = f"{ASSETS}/models/block/schoen_gevuld.json"
+    if os.path.exists(oud):
+        os.remove(oud)
     varianten = {}
     for richting, y in (("north", 0), ("east", 90), ("south", 180), ("west", 270)):
-        for gevuld in ("false", "true"):
-            m = {"model": "sinterklaas:block/schoen" + ("_gevuld" if gevuld == "true" else "")}
+        for inhoud in extra:
+            m = {"model": "sinterklaas:block/schoen" + ("" if inhoud == "leeg" else f"_{inhoud}")}
             if y:
                 m["y"] = y
-            varianten[f"facing={richting},gevuld={gevuld}"] = m
+            varianten[f"facing={richting},inhoud={inhoud}"] = m
     schrijf(f"{ASSETS}/blockstates/schoen.json", {"variants": varianten})
     schrijf(f"{ASSETS}/items/schoen.json", {"model": {"type": "minecraft:model", "model": "sinterklaas:block/schoen"}})
 
@@ -259,9 +272,11 @@ def loot():
     schrijf(f"{DATA}/loot_table/blocks/pakje.json", zelf("pakje"))
     schrijf(f"{DATA}/loot_table/blocks/schoenpakje.json", zelf("schoenpakje"))
     schoen = zelf("schoen")
-    schoen["pools"].append({"rolls": 1, "entries": [{"type": "minecraft:item", "name": "sinterklaas:schoenpakje"}],
-        "conditions": [{"condition": "minecraft:block_state_property", "block": "sinterklaas:schoen",
-                        "properties": {"gevuld": "true"}}]})
+    # Wie een schoen afbreekt, krijgt ook terug wat erin zat (het briefje gaat verloren).
+    for inhoud, wat in (("pakje", "sinterklaas:schoenpakje"), ("wortel", "minecraft:carrot")):
+        schoen["pools"].append({"rolls": 1, "entries": [{"type": "minecraft:item", "name": wat}],
+            "conditions": [{"condition": "minecraft:block_state_property", "block": "sinterklaas:schoen",
+                            "properties": {"inhoud": inhoud}}]})
     schrijf(f"{DATA}/loot_table/blocks/schoen.json", schoen)
     bord = zelf("bord")
     bord["pools"].append({"rolls": 1, "entries": [{"type": "minecraft:item", "name": "sinterklaas:pepernoot",

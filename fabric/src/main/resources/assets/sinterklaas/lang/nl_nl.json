@@ -31,7 +31,9 @@
   "item.sinterklaas.piet_malle_spawn_egg": "Spawn-ei van Malle Pietje",
 
   "bericht.sinterklaas.pakje_te_vroeg": "5 december is het nog niet, je moet even wachten, Piet",
-  "bericht.sinterklaas.schoen_leeg": "De schoen is nog leeg. Kom morgenochtend maar kijken!",
+  "bericht.sinterklaas.schoen_leeg": "De schoen is leeg. Leg je er een wortel in voor het paard?",
+  "bericht.sinterklaas.schoen_wortel_erin": "De wortel ligt klaar voor het paard. Nu nog een nachtje slapen!",
+  "bericht.sinterklaas.schoen_wortel_wacht": "De wortel ligt er nog. Kom morgenochtend maar kijken!",
   "bericht.sinterklaas.schoen_gevuld": "Er zat een pakje in je schoen!",
   "bericht.sinterklaas.gedichtje": "Er zat een briefje in het pakje: %s",
 

@@ -2,7 +2,7 @@
 
 Een Minecraft Java-mod met Sint, Pieten, pakjes en pepernoten. Gemaakt door vader en zoon.
 
-**Versie 0.4.0** voor Minecraft Java 26.2 (Fabric).
+**Versie 0.5.0** voor Minecraft Java 26.2 (Fabric).
 
 ## Wat zit erin
 
@@ -13,13 +13,13 @@ Een Minecraft Java-mod met Sint, Pieten, pakjes en pepernoten. Gemaakt door vade
   - Een gewoon pakje mag open van **5 december t/m 23 december**. Daarbuiten zegt het spel: *"5 december is het nog niet, je moet even wachten, Piet"*.
   - Een **pakje uit de schoen** mag altijd open.
   - Meestal zitten er pepernoten of koekjes in. Zeldzaam: een chocoladeletter, een mijter, een zakje pepernoten of een spawn-ei van een Piet. Heel zeldzaam: een gedichtje in de chat.
-- **Schoen**: zet een schoen neer. De volgende ochtend (in Minecraft-tijd, dus ook na slapen) ligt er een pakje in. Rechtsklik om het te pakken. Elke nacht hooguit één.
+- **Schoen**: zet een schoen neer en leg er met een rechtsklik een **wortel voor het paard** in. De volgende ochtend (in Minecraft-tijd, dus ook na slapen) ligt er een pakje in; rechtsklik om het te pakken. De wortel is dan op: voor een nieuw pakje moet er een nieuwe wortel in. Zet je je schoen **zonder wortel**, dan ligt er de volgende ochtend alleen een briefje van Piet in...
 - **Pepernoten** en een **bord**: leg tot vier pepernoten op een bord (rechtsklik met een pepernoot). Met een lege hand pak je er weer één af.
 - **Mijter**: draag hem op je hoofd. Hij is lekker hoog en beschermt net zo goed als een ijzeren helm.
 
 ### Hoe kom je aan pakjes?
 
-1. Schoen zetten.
+1. Schoen zetten, met een wortel erin.
 2. Pieten laten er af en toe één vallen (elke 10 tot 20 minuten iets: een pakje of een paar pepernoten).
 3. Zelf maken: papier + pepernoot + lint.
 4. Zeldzaam in kisten in dorpen, kerkers en mijnschachten.
@@ -45,7 +45,7 @@ Je hebt nodig: **Minecraft Java Edition 26.2**.
 2. Download **Fabric API** voor 26.2 (versie 0.161.0+26.2 of nieuwer voor 26.2) via https://modrinth.com/mod/fabric-api
 3. Zet deze twee bestanden in je map `mods`:
    - `fabric-api-...+26.2.jar`
-   - `sinterklaas-fabric-0.4.0+mc26.2.jar`
+   - `sinterklaas-fabric-0.5.0+mc26.2.jar`
 
    De map `mods` vind je hier:
    - Windows: `%appdata%\.minecraft\mods`
@@ -88,7 +88,7 @@ De testdatum geldt voor het openen van pakjes én voor het seizoen van Sint en d
 
 | Wat wil je veranderen? | Welk bestand |
 |---|---|
-| Wat Sint en de Pieten zeggen, en de gedichtjes | `core/src/main/resources/sinterklaas/teksten.json` |
+| Wat Sint en de Pieten zeggen, de gedichtjes en het briefje in de schoen | `core/src/main/resources/sinterklaas/teksten.json` |
 | Wat er in een pakje zit en hoe vaak | `fabric/src/main/resources/data/sinterklaas/loot_table/gameplay/pakje_inhoud.json` |
 | Wat een Piet laat vallen | `.../loot_table/gameplay/piet_cadeau.json` |
 | De kans op een pakje in kisten | `.../loot_table/chests/kist_extra.json` |
@@ -116,7 +116,7 @@ De jar staat daarna in `fabric/build/libs/`.
 | `./gradlew build` | Bouwt de jar en draait de tests van de spelregels |
 | `./gradlew :core:test` | Alleen de tests van de spelregels (4 december, 5 december, tijdzone, schoen, seizoen) |
 | `./gradlew :fabric:runClient` | Start Minecraft met de mod om te spelen |
-| `./gradlew :fabric:runClientGameTest` | Automatische proef in een echte client: controleert 68 dingen en maakt screenshots |
+| `./gradlew :fabric:runClientGameTest` | Automatische proef in een echte client: controleert 76 dingen en maakt screenshots |
 | `python3 tools/maak_assets.py` | Maakt modellen, plaatjes, loot-tables en recepten opnieuw |
 
 ### Hoe zit het in elkaar

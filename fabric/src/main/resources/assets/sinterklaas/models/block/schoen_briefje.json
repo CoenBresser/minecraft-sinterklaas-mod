@@ -3,7 +3,10 @@
  "textures": {
   "t": "sinterklaas:block/schoen",
   "p": "sinterklaas:block/pakje",
-  "particle": "sinterklaas:block/schoen"
+  "particle": "sinterklaas:block/schoen",
+  "o": "minecraft:block/orange_concrete",
+  "g": "minecraft:block/moss_block",
+  "w": "minecraft:block/white_concrete"
  },
  "elements": [
   {
@@ -280,70 +283,79 @@
   },
   {
    "from": [
-    5.5,
-    10,
-    8.5
+    6,
+    9.5,
+    10.75
    ],
    "to": [
-    10.5,
-    14.5,
-    13.5
+    10,
+    15,
+    11.25
    ],
    "faces": {
     "up": {
      "uv": [
-      3.0,
       0,
-      6.0,
-      3.0
+      0,
+      4,
+      4
      ],
-     "texture": "#p"
+     "texture": "#w"
     },
     "down": {
      "uv": [
-      3.0,
       0,
-      6.0,
-      3.0
+      0,
+      4,
+      4
      ],
-     "texture": "#p"
+     "texture": "#w"
     },
     "north": {
      "uv": [
-      3.0,
-      3.0,
-      6.0,
-      5.25
+      0,
+      0,
+      4,
+      4
      ],
-     "texture": "#p"
+     "texture": "#w"
     },
     "south": {
      "uv": [
-      3.0,
-      3.0,
-      6.0,
-      5.25
+      0,
+      0,
+      4,
+      4
      ],
-     "texture": "#p"
+     "texture": "#w"
     },
     "east": {
      "uv": [
-      3.0,
-      3.0,
-      6.0,
-      5.25
+      0,
+      0,
+      4,
+      4
      ],
-     "texture": "#p"
+     "texture": "#w"
     },
     "west": {
      "uv": [
-      3.0,
-      3.0,
-      6.0,
-      5.25
+      0,
+      0,
+      4,
+      4
      ],
-     "texture": "#p"
+     "texture": "#w"
     }
+   },
+   "rotation": {
+    "angle": 22.5,
+    "axis": "z",
+    "origin": [
+     8,
+     10,
+     11
+    ]
    }
   }
  ],

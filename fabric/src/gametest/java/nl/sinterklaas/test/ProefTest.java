@@ -171,33 +171,99 @@ public class ProefTest implements FabricClientGameTest {
 		server.runCommand("kill @e[type=item]");
 	}
 
+	private static SchoenBlok.Inhoud inhoud(TestServerContext server, BlockPos plek) {
+		return staat(server, plek).getValue(SchoenBlok.INHOUD);
+	}
+
+	/** Rechtsklik op de schoen met een wortel in de hand, aan de serverkant. Geeft terug hoeveel wortels er over zijn. */
+	private static int klikMetWortels(TestServerContext server, BlockPos plek, int aantal) {
+		server.runCommand("item replace entity @p weapon.mainhand with minecraft:carrot " + aantal);
+		int over = server.computeOnServer(s -> {
+			ServerLevel w = s.overworld();
+			ServerPlayer sp = speler(s);
+			var uitkomst = w.getBlockState(plek).useItemOn(sp.getMainHandItem(), w, sp, InteractionHand.MAIN_HAND, raak(plek));
+			if (uitkomst instanceof net.minecraft.world.InteractionResult.TryEmptyHandInteraction) {
+				w.getBlockState(plek).useWithoutItem(w, sp, raak(plek));
+			}
+			return sp.getMainHandItem().getCount();
+		});
+		server.runCommand("item replace entity @p weapon.mainhand with air");
+		return over;
+	}
+
 	private void schoen(ClientGameTestContext context, TestServerContext server) {
 		BlockPos p = new BlockPos(-2, Y, 2);
+		server.runCommand("gamemode survival @p");
+
+		// 1. Schoen zomaar gezet, zonder wortel: de volgende ochtend een briefje, geen pakje
 		server.runCommand("setblock -2 149 2 sinterklaas:schoen[facing=south]");
 		context.waitTicks(120);
-		ok(!staat(server, p).getValue(SchoenBlok.GEVULD), "schoen is dezelfde dag nog leeg");
-
+		ok(inhoud(server, p) == SchoenBlok.Inhoud.LEEG, "schoen zonder wortel is dezelfde dag nog leeg");
 		long dagVoor = server.computeOnServer(s -> SchoenBlok.dagNu(s.overworld()));
 		server.runCommand("time add 24000");
-		long dagNa = server.computeOnServer(s -> SchoenBlok.dagNu(s.overworld()));
-		ok(dagNa == dagVoor + 1, "de klok is een Minecraft-dag verder gezet");
+		ok(server.computeOnServer(s -> SchoenBlok.dagNu(s.overworld())) == dagVoor + 1, "de klok is een Minecraft-dag verder gezet");
 		context.waitTicks(120);
-		ok(staat(server, p).getValue(SchoenBlok.GEVULD), "de volgende ochtend ligt er een pakje in de schoen");
+		ok(inhoud(server, p) == SchoenBlok.Inhoud.BRIEFJE, "schoen zonder wortel: de volgende ochtend ligt er een briefje in");
+		server.runCommand("tp @p -1.5 149 0.3 0 35");
+		context.waitTicks(15);
+		context.takeScreenshot("fase4-1-briefje-in-de-schoen");
 
+		// Een wortel kan er nu niet bij: eerst het briefje lezen (echte muisklik met lege hand)
+		context.getInput().pressMouse(1);
+		context.waitTicks(15);
+		ok(inhoud(server, p) == SchoenBlok.Inhoud.LEEG, "rechtsklik leest het briefje en de schoen is weer leeg");
+		ok(server.computeOnServer(s -> speler(s).getInventory().countItem(ModItems.SCHOENPAKJE)) == 0,
+			"zonder wortel krijg je geen pakje");
+		context.takeScreenshot("fase4-2-gedicht-van-piet");
 		context.waitTicks(120);
-		ok(staat(server, p).getValue(SchoenBlok.GEVULD), "er komt geen tweede pakje bij zolang de schoen vol is");
+		ok(inhoud(server, p) == SchoenBlok.Inhoud.LEEG, "dezelfde dag komt er geen nieuw briefje (eenmalig per nacht)");
 
-		klik(server, p);
-		ok(!staat(server, p).getValue(SchoenBlok.GEVULD), "rechtsklik haalt het pakje uit de schoen");
-		ok(server.computeOnServer(s -> speler(s).getInventory().countItem(ModItems.SCHOENPAKJE)) == 1,
-			"de speler krijgt precies één pakje-uit-de-schoen");
+		// 2. Wortel erin met een rechtsklik: de volgende ochtend een pakje
+		ok(klikMetWortels(server, p, 3) == 2, "rechtsklik met een wortel kost precies één wortel");
+		ok(inhoud(server, p) == SchoenBlok.Inhoud.WORTEL, "de wortel ligt in de schoen");
+		ok(klikMetWortels(server, p, 3) == 3, "een tweede wortel past er niet bij");
+		context.waitTicks(15);
+		context.takeScreenshot("fase4-3-wortel-in-de-schoen");
 		context.waitTicks(120);
-		ok(!staat(server, p).getValue(SchoenBlok.GEVULD), "dezelfde dag komt er geen nieuw pakje (eenmalig per nacht)");
-
+		ok(inhoud(server, p) == SchoenBlok.Inhoud.WORTEL, "met wortel: dezelfde dag gebeurt er nog niets");
 		server.runCommand("time add 24000");
 		context.waitTicks(120);
-		ok(staat(server, p).getValue(SchoenBlok.GEVULD), "na de volgende nacht ligt er weer een pakje");
+		ok(inhoud(server, p) == SchoenBlok.Inhoud.PAKJE, "met wortel: de volgende ochtend ligt er een pakje in");
+		context.takeScreenshot("fase4-4-pakje-in-de-schoen");
+		context.waitTicks(120);
+		ok(inhoud(server, p) == SchoenBlok.Inhoud.PAKJE, "er komt geen tweede pakje bij zolang het eerste erin ligt");
+
+		klik(server, p);
+		ok(inhoud(server, p) == SchoenBlok.Inhoud.LEEG, "rechtsklik haalt het pakje eruit; de wortel is op");
+		ok(server.computeOnServer(s -> speler(s).getInventory().countItem(ModItems.SCHOENPAKJE)) == 1,
+			"de speler krijgt precies één pakje-uit-de-schoen");
+
+		// 3. Zonder nieuwe wortel komt er de nacht erna weer een briefje, geen pakje
+		server.runCommand("time add 24000");
+		context.waitTicks(120);
+		ok(inhoud(server, p) == SchoenBlok.Inhoud.BRIEFJE, "zonder nieuwe wortel ligt er de nacht erna weer een briefje");
+
+		// 4. Afbreken met een wortel erin geeft de schoen en de wortel terug
+		server.runCommand("clear @p");
+		server.runCommand("kill @e[type=item]");
+		server.runCommand("setblock -2 149 2 sinterklaas:schoen[facing=south,inhoud=wortel]");
+		server.runCommand("setblock -2 149 2 air destroy");
+		context.waitTicks(5);
+		List<String> gevallen = server.computeOnServer(s -> {
+			List<String> namen = new ArrayList<>();
+			for (ItemEntity e : s.overworld().getEntitiesOfClass(ItemEntity.class, new AABB(p).inflate(3))) {
+				namen.add(BuiltInRegistries.ITEM.getKey(e.getItem().getItem()).getPath() + "x" + e.getItem().getCount());
+			}
+			java.util.Collections.sort(namen);
+			return namen;
+		});
+		ok(gevallen.equals(List.of("carrotx1", "schoenx1")),
+			"een schoen met wortel afbreken geeft de schoen en de wortel terug");
+
+		server.runCommand("setblock -2 149 2 sinterklaas:schoen[facing=south,inhoud=pakje]");
 		server.runCommand("time set noon");
+		server.runCommand("gamemode creative @p");
+		server.runCommand("tp @p 0.5 149 0.5 0 29");
 		server.runCommand("clear @p");
 	}
 
