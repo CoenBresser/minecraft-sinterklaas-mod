@@ -407,7 +407,7 @@ def sint_ei():
         "................", ".......rr.......", "......rlbr......", ".....rlbbbr.....",
         "....rlbggbbr....", "....rlbggbbr....", "...rlbbggbbbr...", "...rlggggggbr...",
         "...rlggggggbr...", "...rlbbggbbbr...", "...rlbbggbbbr...", "...rlbbggbbbr...",
-        "...rggggggggr...", "...rggggggggr...", "...rrrrrrrrrr...", "................",
+        "...rggggggggr...", "....rggggggr....", ".....rrrrrr.....", "................",
     ]
     kleuren = {"b": (190, 20, 30, 255), "l": (220, 50, 55, 255), "r": (110, 8, 18, 255), "g": (240, 196, 60, 255)}
     teken("sint_spawn_egg", rijen, kleuren)
