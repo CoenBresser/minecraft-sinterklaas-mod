@@ -19,9 +19,9 @@ import nl.sinterklaas.entiteit.Sint;
 import nl.sinterklaas.entiteit.SinterklaasFiguur;
 
 public final class ModEntiteiten {
-	/** Pieten hebben de afmetingen van een pillager, Sint die van een speler. Eén Piet-type voor alle varianten. */
+	/** Sint en de Pieten hebben de afmetingen van een speler. Eén Piet-type voor alle varianten. */
 	public static final EntityType<Piet> PIET = registreer(Namen.PIET,
-		EntityType.Builder.of(Piet::new, MobCategory.CREATURE).sized(0.6F, 1.95F).clientTrackingRange(8));
+		EntityType.Builder.of(Piet::new, MobCategory.CREATURE).sized(0.6F, 1.8F).clientTrackingRange(8));
 
 	public static final EntityType<Sint> SINT = registreer(Namen.SINT,
 		EntityType.Builder.of(Sint::new, MobCategory.CREATURE).sized(0.6F, 1.8F).clientTrackingRange(10));

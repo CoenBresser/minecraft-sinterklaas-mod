@@ -70,7 +70,9 @@ public final class ModItems {
 	public static final Item LINT = registreer(Namen.LINT, Item::new);
 	public static final Item GEDICHTJE = registreer(Namen.GEDICHTJE, p -> new GedichtjeItem(p.stacksTo(16)));
 
-	// Spawn-eieren: één per Piet-variant, plus Sint
+	// Spawn-eieren: een gewone Piet (willekeurige variant), één per Piet-variant, plus Sint.
+	/** Zonder variant in het ei kiest Piet.finalizeSpawn zelf een willekeurige Piet. */
+	public static final Item PIET_EI = registreer("piet_spawn_egg", p -> new SpawnEggItem(p.spawnEgg(ModEntiteiten.PIET)));
 	public static final Map<PietVariant, Item> PIET_EIEREN = new EnumMap<>(PietVariant.class);
 	static {
 		for (PietVariant variant : PietVariant.values()) {
@@ -121,6 +123,7 @@ public final class ModItems {
 						CHOCOLADELETTER, MIJTER, STAF, LINT, GEDICHTJE, SINT_EI}) {
 					uitvoer.accept(new ItemStack(item));
 				}
+				uitvoer.accept(new ItemStack(PIET_EI));
 				for (Item ei : PIET_EIEREN.values()) uitvoer.accept(new ItemStack(ei));
 				for (Map<PietenpakRegels.Deel, Item> pak : PIETENPAK.values()) {
 					for (Item deel : pak.values()) uitvoer.accept(new ItemStack(deel));

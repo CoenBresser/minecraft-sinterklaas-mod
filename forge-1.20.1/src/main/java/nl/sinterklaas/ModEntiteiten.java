@@ -18,9 +18,9 @@ import nl.sinterklaas.entiteit.SinterklaasFiguur;
 public final class ModEntiteiten {
 	private static final DeferredRegister<EntityType<?>> ENTITEITEN = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, Namen.MOD_ID);
 
-	/** Pieten hebben de afmetingen van een pillager, Sint die van een speler. Eén Piet-type voor alle varianten. */
+	/** Sint en de Pieten hebben de afmetingen van een speler. Eén Piet-type voor alle varianten. */
 	public static final RegistryObject<EntityType<Piet>> PIET = ENTITEITEN.register(Namen.PIET,
-		() -> EntityType.Builder.<Piet>of(Piet::new, MobCategory.CREATURE).sized(0.6F, 1.95F).clientTrackingRange(8)
+		() -> EntityType.Builder.<Piet>of(Piet::new, MobCategory.CREATURE).sized(0.6F, 1.8F).clientTrackingRange(8)
 			.build(SinterklaasMod.id(Namen.PIET).toString()));
 
 	public static final RegistryObject<EntityType<Sint>> SINT = ENTITEITEN.register(Namen.SINT,

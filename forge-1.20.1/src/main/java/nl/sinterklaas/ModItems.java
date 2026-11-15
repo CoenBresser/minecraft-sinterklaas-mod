@@ -55,7 +55,11 @@ public final class ModItems {
 	public static final RegistryObject<Item> GEDICHTJE = ITEMS.register(Namen.GEDICHTJE,
 		() -> new GedichtjeItem(new Item.Properties().stacksTo(16)));
 
-	// Spawn-eieren: één per Piet-variant, plus Sint. De kleuren doen er niet toe: elk ei heeft een eigen plaatje.
+	// Spawn-eieren: een gewone Piet (willekeurige variant), één per Piet-variant, plus Sint.
+	// De kleuren doen er niet toe: elk ei heeft een eigen plaatje.
+	/** Zonder variant uit het ei kiest Piet.finalizeSpawn zelf een willekeurige Piet. */
+	public static final RegistryObject<Item> PIET_EI = ITEMS.register("piet_spawn_egg",
+		() -> new ForgeSpawnEggItem(ModEntiteiten.PIET, 0xFFFFFF, 0xFFFFFF, new Item.Properties()));
 	public static final Map<PietVariant, RegistryObject<Item>> PIET_EIEREN = new EnumMap<>(PietVariant.class);
 	static {
 		for (PietVariant variant : PietVariant.values()) {
@@ -95,6 +99,7 @@ public final class ModItems {
 					CHOCOLADELETTER, MIJTER, STAF, LINT, GEDICHTJE, SINT_EI)) {
 				uitvoer.accept(new ItemStack(item.get()));
 			}
+			uitvoer.accept(new ItemStack(PIET_EI.get()));
 			for (RegistryObject<Item> ei : PIET_EIEREN.values()) uitvoer.accept(new ItemStack(ei.get()));
 			for (Map<PietenpakRegels.Deel, RegistryObject<Item>> pak : PIETENPAK.values()) {
 				for (RegistryObject<Item> deel : pak.values()) uitvoer.accept(new ItemStack(deel.get()));

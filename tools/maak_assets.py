@@ -366,8 +366,20 @@ def kostuumkleuren(pad):
     stip = next((k for k, _ in tel.most_common() if sum(abs(p - q) for p, q in zip(k, basis)) > 150), (255, 255, 255))
     return basis, stip
 
+# De kleuren van de Piet-eieren liggen vast. Ze kwamen uit de kostuums toen de Pieten nog
+# pillager-plaatjes hadden; zo blijven de eieren hetzelfde nu de plaatjes speler-skins zijn.
+# Wil je de kleuren weer uit een (nieuw getekend) kostuum halen, haal de Piet dan uit dit lijstje.
+EI_KLEUREN = {
+    "piet_roetveeg": ((36, 60, 156), (180, 12, 36)),
+    "piet_hoofd": ((12, 36, 84), (228, 180, 60)),
+    "piet_pakjes": ((36, 108, 36), (180, 12, 36)),
+    "piet_wegwijs": ((12, 108, 132), (204, 108, 36)),
+    "piet_koek": ((108, 60, 36), (252, 228, 180)),
+    "piet_malle": ((108, 60, 156), (204, 156, 36)),
+}
+
 def spawn_ei(textuur, naam):
-    basis, stip = kostuumkleuren(os.path.join(TEX, textuur))
+    basis, stip = EI_KLEUREN.get(naam) or kostuumkleuren(os.path.join(TEX, textuur))
     kleuren = {"b": basis + (255,), "s": stip + (255,),
                "r": tuple(int(c * 0.55) for c in basis) + (255,),
                "l": tuple(min(255, int(c * 1.35) + 30) for c in basis) + (255,)}
@@ -389,50 +401,38 @@ def vlakken(u, v, w, h, d):
             "rechts": (u, v + d, d, h), "voor": (u + d, v + d, w, h),
             "links": (u + d + w, v + d, d, h), "achter": (u + 2 * d + w, v + d, w, h)}
 
-def zet_doos(bron, doel, van, naar, rijen=None, doel_rijen=None, zonder=()):
-    """Neemt de vlakken van doos 'van' uit het Piet-plaatje over op doos 'naar' van het harnasplaatje.
+def zet_doos(bron, doel, doos, rijen=None, zonder=()):
+    """Neemt de vlakken van een doos over van het Piet-plaatje naar het harnasplaatje.
 
-    De dozen van een Piet (het pillager-model) zijn anders van maat dan die van een speler; elk vlak
-    wordt daarom passend geschaald. Met 'rijen' (begin, eind) gebruik je maar een deel van de hoogte
-    van de zijvlakken, met 'doel_rijen' zet je dat op een deel van de hoogte van het doel.
+    Een Piet heeft een gewone speler-skin, en die heeft voor hoofd, romp, arm en been dezelfde
+    plek en maat als een harnasplaatje. Met 'rijen' (begin, eind) neem je maar een deel van de
+    hoogte van de zijvlakken over, op dezelfde hoogte.
     """
-    bv, dv = vlakken(*van), vlakken(*naar)
-    for naam, (x, y, w, h) in bv.items():
+    for naam, (x, y, w, h) in vlakken(*doos).items():
         if naam in zonder:
             continue
-        dx, dy, dw, dh = dv[naam]
-        zijkant = naam not in ("boven", "onder")
-        if zijkant and rijen:
+        if rijen and naam not in ("boven", "onder"):
             y, h = y + rijen[0], rijen[1] - rijen[0]
-        if zijkant and doel_rijen:
-            dy, dh = dy + doel_rijen[0], doel_rijen[1] - doel_rijen[0]
-        stuk = bron.crop((x, y, x + w, y + h)).resize((dw, dh), Image.NEAREST)
-        laag = Image.new("RGBA", doel.size)
-        laag.paste(stuk, (dx, dy))
-        doel.alpha_composite(laag)
+        doel.alpha_composite(bron.crop((x, y, x + w, y + h)), (x, y))
 
-# Dozen van het Piet-plaatje (pillager-model, 64x64): (u, v, breedte, hoogte, diepte)
-P_HOED, P_ROMP, P_JAS = (32, 0, 8, 10, 8), (16, 20, 8, 12, 6), (0, 38, 8, 20, 6)
-P_BEEN, P_ARM = (0, 22, 4, 12, 4), (40, 46, 4, 12, 4)
-# Dozen van een harnasplaatje (64x32), net als bij een speler
-H_HOED, H_ROMP, H_BEEN, H_ARM = (32, 0, 8, 8, 8), (16, 16, 8, 12, 4), (0, 16, 4, 12, 4), (40, 16, 4, 12, 4)
+# Dozen van een speler-skin en een harnasplaatje: (u, v, breedte, hoogte, diepte)
+HOED, ROMP, BEEN, ARM = (32, 0, 8, 8, 8), (16, 16, 8, 12, 4), (0, 16, 4, 12, 4), (40, 16, 4, 12, 4)
 
 def harnas_plaatjes(v):
-    """Twee harnasplaatjes uit het plaatje van de Piet. Het gezicht en het haar gaan niet mee:
+    """Twee harnasplaatjes uit de skin van de Piet. Het gezicht en het haar gaan niet mee:
     wie het pak aan heeft, houdt zijn eigen gezicht.
 
-    laag 1: muts (de baret met veer), jasje (romp met kraag, jas en mouwen) en schoenen
-    laag 2: de broek (pofbroek met kousen) en een stukje jas om het middel
+    laag 1: muts (de baret op de hoedlaag), jasje (romp en mouwen) en schoenen (onderkant been)
+    laag 2: de broek (het been, met bovenaan de onderkant van de jas) en het middel van de jas
     """
     piet = Image.open(os.path.join(TEX, f"piet_{v}.png")).convert("RGBA")
     laag1, laag2 = Image.new("RGBA", (64, 32)), Image.new("RGBA", (64, 32))
-    zet_doos(piet, laag1, P_HOED, H_HOED, rijen=(0, 8), zonder=("onder",))
-    zet_doos(piet, laag1, P_ROMP, H_ROMP)
-    zet_doos(piet, laag1, P_JAS, H_ROMP, rijen=(0, 12), zonder=("onder",))
-    zet_doos(piet, laag1, P_ARM, H_ARM, zonder=("onder",))   # de onderkant is de hand
-    zet_doos(piet, laag1, P_BEEN, H_BEEN, rijen=(8, 12), doel_rijen=(8, 12), zonder=("boven",))
-    zet_doos(piet, laag2, P_BEEN, H_BEEN, zonder=("onder",))
-    zet_doos(piet, laag2, P_JAS, H_ROMP, rijen=(16, 20), doel_rijen=(8, 12), zonder=("boven", "onder"))
+    zet_doos(piet, laag1, HOED, zonder=("onder",))
+    zet_doos(piet, laag1, ROMP)
+    zet_doos(piet, laag1, ARM, zonder=("onder",))   # de onderkant is de hand
+    zet_doos(piet, laag1, BEEN, rijen=(8, 12), zonder=("boven",))
+    zet_doos(piet, laag2, BEEN, zonder=("onder",))
+    zet_doos(piet, laag2, ROMP, rijen=(8, 12), zonder=("boven", "onder"))
     return laag1, laag2
 
 def kleur_van(bron, vakken):
@@ -475,10 +475,10 @@ PAK_ICOON = {
 
 def pak_icoontjes(v):
     piet = Image.open(os.path.join(TEX, f"piet_{v}.png")).convert("RGBA")
-    hoed = kleur_van(piet, [(40, 8, 24, 3)])         # de rand van de baret
-    jas = kleur_van(piet, [(6, 44, 2, 10), (12, 44, 2, 10)])   # de zijkanten van de voorkant van de jas
-    broek = kleur_van(piet, [(4, 26, 4, 5)])         # de pofbroek
-    schoen = kleur_van(piet, [(4, 36, 4, 2)])        # de schoenen
+    hoed = kleur_van(piet, [(32, 8, 32, 3)])                   # de rand van de baret
+    jas = kleur_van(piet, [(16, 20, 4, 10), (28, 20, 4, 10)])  # de zijkanten van de jas
+    broek = kleur_van(piet, [(4, 20, 4, 6)])                   # bovenaan het been
+    schoen = kleur_van(piet, [(4, 30, 4, 2)])                  # de schoenen
     goud = (236, 190, 60, 255)
     for deel, basis in (("muts", hoed), ("jasje", jas), ("broek", broek), ("schoenen", schoen)):
         kleuren = {"b": tint(basis, 1.0), "l": tint(basis, 1.3), "d": tint(basis, 0.65), "a": goud,
@@ -506,6 +506,45 @@ def pietenpak():
             os.makedirs(os.path.dirname(pad), exist_ok=True)
             laag.save(pad)
         pak_icoontjes(v)
+
+def gewoon_piet_ei():
+    """Het ei waar een willekeurige Piet uit komt: rood, vol stipjes in allerlei kleuren.
+
+    De stipjes staan op willekeurige plekken, maar met een vaste beginwaarde, zodat het plaatje
+    bij elke keer draaien hetzelfde blijft.
+    """
+    import random
+    toeval = random.Random(512)
+    STIPKLEUREN = ["1", "2", "3", "4", "5", "6"]
+    rijen = [list(rij.replace("s", "b")) for rij in EI]
+    vrij = [(x, y) for y, rij in enumerate(rijen) for x, c in enumerate(rij) if c == "b"]
+    toeval.shuffle(vrij)
+    gezet = []
+    for x, y in vrij:
+        if len(gezet) == 16: break
+        if any(abs(x - a) <= 1 and abs(y - b) <= 1 for a, b in gezet): continue   # stipjes raken elkaar niet
+        rijen[y][x] = toeval.choice(STIPKLEUREN)
+        gezet.append((x, y))
+    basis = (200, 24, 36)
+    kleuren = {"b": basis + (255,), "r": (110, 10, 20, 255), "l": (240, 110, 110, 255),
+               "1": (255, 255, 255, 255), "2": (250, 210, 60, 255), "3": (70, 130, 240, 255),
+               "4": (80, 200, 90, 255), "5": (180, 110, 230, 255), "6": (255, 150, 40, 255)}
+    teken("piet_spawn_egg", ["".join(r) for r in rijen], kleuren)
+    plat_item("piet_spawn_egg")
+    print(f"  spawn-ei piet (willekeurig): rood met {len(gezet)} stipjes")
+
+def sint_ei():
+    """Het ei van Sinterklaas heeft de vorm van zijn mijter: rood, met een geel kruis en een gele rand."""
+    rijen = [
+        "................", ".......rr.......", "......rlbr......", ".....rlbbbr.....",
+        "....rlbggbbr....", "....rlbggbbr....", "...rlbbggbbbr...", "...rlggggggbr...",
+        "...rlggggggbr...", "...rlbbggbbbr...", "...rlbbggbbbr...", "...rlbbggbbbr...",
+        "...rggggggggr...", "....rggggggr....", ".....rrrrrr.....", "................",
+    ]
+    kleuren = {"b": (190, 20, 30, 255), "l": (220, 50, 55, 255), "r": (110, 8, 18, 255), "g": (240, 196, 60, 255)}
+    teken("sint_spawn_egg", rijen, kleuren)
+    plat_item("sint_spawn_egg")
+    print("  spawn-ei sint: mijter")
 
 # ---------------------------------------------------------------- data
 
@@ -551,6 +590,7 @@ def loot():
                 item("sinterklaas:chocoladeletter", 8),
                 item("sinterklaas:zakje_pepernoten", 6),
                 item("sinterklaas:mijter", 3),
+                item("sinterklaas:piet_spawn_egg", 1),
             ] + [item(f"sinterklaas:piet_{v}_spawn_egg", 1) for v in VARIANTEN]},
             # zeer zeldzaam: een gedichtje of grap (verschijnt in de chat)
             {"rolls": 1, "entries": [item("sinterklaas:gedichtje")],
@@ -637,7 +677,8 @@ if __name__ == "__main__":
     pakje_modellen(); schoen_modellen(); bord_modellen(); mijter_model(); staf_model(); item_plaatjes(); pietenpak()
     for v in VARIANTEN:
         spawn_ei(f"piet_{v}.png", f"piet_{v}")
-    spawn_ei("sint.png", "sint")
+    gewoon_piet_ei()
+    sint_ei()
     loot(); recepten()
     forge()
     print("klaar")

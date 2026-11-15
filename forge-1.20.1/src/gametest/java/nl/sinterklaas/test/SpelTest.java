@@ -265,6 +265,25 @@ public class SpelTest {
 	}
 
 	@GameTest(template = RUIMTE, batch = "dec5")
+	public static void uitHetGewoneEiKomtEenWillekeurigePiet(GameTestHelper test) {
+		test.setBlock(VLOER, Blocks.STONE);
+		Player speler = speler(test);
+		BlockPos vloer = test.absolutePos(VLOER);
+		for (int n = 0; n < 30; n++) {
+			ItemStack ei = new ItemStack(ModItems.PIET_EI.get());
+			speler.setItemInHand(InteractionHand.MAIN_HAND, ei);
+			ei.useOn(new UseOnContext(speler, InteractionHand.MAIN_HAND,
+				new BlockHitResult(Vec3.atCenterOf(vloer), Direction.UP, vloer, false)));
+		}
+		List<Piet> pieten = test.getLevel().getEntitiesOfClass(Piet.class, new AABB(vloer).inflate(2.0));
+		ok(test, pieten.size() == 30, "niet uit elk gewoon ei kwam een Piet: " + pieten.size());
+		long soorten = pieten.stream().map(Piet::variant).distinct().count();
+		ok(test, soorten >= 3, "het gewone Piet-ei gaf te weinig verschillende Pieten: " + soorten);
+		pieten.forEach(Piet::discard);
+		test.succeed();
+	}
+
+	@GameTest(template = RUIMTE, batch = "dec5")
 	public static void pietLaatIetsVallen(GameTestHelper test) {
 		test.setBlock(VLOER, Blocks.STONE);
 		Piet piet = test.spawn(ModEntiteiten.PIET.get(), PLEK);
