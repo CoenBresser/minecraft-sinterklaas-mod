@@ -401,6 +401,19 @@ def gewoon_piet_ei():
     plat_item("piet_spawn_egg")
     print(f"  spawn-ei piet (willekeurig): rood met {len(gezet)} stipjes")
 
+def sint_ei():
+    """Het ei van Sinterklaas heeft de vorm van zijn mijter: rood, met een geel kruis en een gele rand."""
+    rijen = [
+        "................", ".......rr.......", "......rlbr......", ".....rlbbbr.....",
+        "....rlbggbbr....", "....rlbggbbr....", "...rlbbggbbbr...", "...rlggggggbr...",
+        "...rlggggggbr...", "...rlbbggbbbr...", "...rlbbggbbbr...", "...rlbbggbbbr...",
+        "...rggggggggr...", "...rggggggggr...", "...rrrrrrrrrr...", "................",
+    ]
+    kleuren = {"b": (190, 20, 30, 255), "l": (220, 50, 55, 255), "r": (110, 8, 18, 255), "g": (240, 196, 60, 255)}
+    teken("sint_spawn_egg", rijen, kleuren)
+    plat_item("sint_spawn_egg")
+    print("  spawn-ei sint: mijter")
+
 # ---------------------------------------------------------------- data
 
 def item(naam, gewicht=1, min_=None, max_=None):
@@ -526,7 +539,7 @@ if __name__ == "__main__":
     for v in VARIANTEN:
         spawn_ei(f"piet_{v}.png", f"piet_{v}")
     gewoon_piet_ei()
-    spawn_ei("sint.png", "sint")
+    sint_ei()
     loot(); recepten()
     forge()
     print("klaar")
