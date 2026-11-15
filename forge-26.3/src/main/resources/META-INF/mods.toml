@@ -1,0 +1,26 @@
+modLoader="javafml"
+loaderVersion="[66,)"
+license="MIT"
+issueTrackerURL="https://github.com/CoenBresser/minecraft-sinterklaas-mod/issues"
+
+[[mods]]
+modId="sinterklaas"
+version="${version}"
+displayName="Sinterklaas"
+displayURL="https://github.com/CoenBresser/minecraft-sinterklaas-mod"
+authors="De makers van de Sinterklaas-mod"
+description='''Sint, Pieten, pakjes en pepernoten in Minecraft.'''
+
+[[dependencies.sinterklaas]]
+modId="forge"
+mandatory=true
+versionRange="[66,)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.sinterklaas]]
+modId="minecraft"
+mandatory=true
+versionRange="[26.3,26.4)"
+ordering="NONE"
+side="BOTH"

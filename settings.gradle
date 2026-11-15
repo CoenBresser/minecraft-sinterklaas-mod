@@ -1,9 +1,4 @@
-pluginManagement {
-	repositories {
-		maven { name = 'Fabric'; url = 'https://maven.fabricmc.net/' }
-		mavenCentral()
-		gradlePluginPortal()
-	}
-}
+// De hoofdbuild: de spelregels (core) en de mod voor Minecraft 26.3 op Forge.
+// De versie voor Minecraft 1.20.1 is een eigen Gradle-build in forge-1.20.1/ (ForgeGradle 6, Gradle 8, Java 17).
 rootProject.name = 'sinterklaas'
-include 'core', 'fabric'
+include 'core', 'forge-26.3'

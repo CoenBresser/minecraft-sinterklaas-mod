@@ -27,13 +27,15 @@ Heb je iets verbeterd of toegevoegd? Deel het dan het liefst hier, zodat iederee
 2. Maak je wijziging en controleer hem:
 
 ```bash
-./gradlew build
+./gradlew build                              # Minecraft 26.3 (Java 25)
+cd forge-1.20.1 && ./gradlew build           # Minecraft 1.20.1 (Java 17)
 ```
 
-Dat bouwt de mod en draait de tests van de spelregels. Raak je iets in het spel zelf, draai dan ook:
+Dat bouwt de mod en draait de tests van de spelregels. Raak je iets in het spel zelf, draai dan ook de speltests:
 
 ```bash
-./gradlew :fabric:runClientGameTest
+./gradlew :forge-26.3:runGameTestServer
+cd forge-1.20.1 && ./gradlew runGameTestServer
 ```
 
 3. Open een pull request naar `main`. GitHub draait dan dezelfde controles automatisch (`verify` en `speltest`).
@@ -68,6 +70,7 @@ Het versienummer in `gradle.properties` wordt daarbij vanzelf bijgewerkt; pas he
 Een paar afspraken:
 
 - Spelregels (datums, seizoen, schoen, praten) horen in `core/`, zonder Minecraft-code, met een test erbij.
+- De mod bestaat voor twee Minecraft-versies (`forge-26.3/` en `forge-1.20.1/`). Iets nieuws in het spel hoort in allebei, met een speltest in allebei.
 - Loot, recepten, modellen en item-plaatjes komen uit `tools/maak_assets.py`. Pas dat script aan, niet de gemaakte bestanden.
 - Namen en commentaar in de code zijn in het Nederlands.
 - Houd het vriendelijk en geschikt voor kinderen: dit is een mod van een vader en zijn zoon.

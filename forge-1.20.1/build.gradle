@@ -1,0 +1,105 @@
+plugins {
+	id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+}
+
+// Eén versienummer voor de hele mod: dat van de hoofdmap (release-please werkt het daar bij).
+def hoofd = new Properties()
+file('../gradle.properties').withInputStream { hoofd.load(it) }
+def modVersie = hoofd.getProperty('mod_version')
+
+group = 'nl.sinterklaas'
+version = "${modVersie}+mc${minecraft_version}"
+base { archivesName = 'sinterklaas-forge' }
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+
+// De spelregels (../core) hebben geen Minecraft nodig en worden hier gewoon meegecompileerd.
+sourceSets {
+	main {
+		java { srcDir '../core/src/main/java' }
+		resources { srcDir '../core/src/main/resources' }
+	}
+	// Speltests: draaien mee bij runGameTestServer, maar zitten niet in de mod-jar.
+	gametest {
+		compileClasspath += sourceSets.main.output
+		runtimeClasspath += sourceSets.main.output
+	}
+}
+configurations {
+	gametestImplementation.extendsFrom implementation
+	gametestCompileOnly.extendsFrom compileOnly
+	gametestRuntimeOnly.extendsFrom runtimeOnly
+}
+
+minecraft {
+	mappings channel: 'official', version: minecraft_version
+	copyIdeResources = true
+	runs {
+		configureEach {
+			workingDirectory project.file('run')
+			property 'forge.logging.console.level', 'info'
+			property 'forge.enabledGameTestNamespaces', 'sinterklaas'
+			mods {
+				sinterklaas { source sourceSets.main }
+			}
+		}
+		client {}
+		server { args '--nogui' }
+		// Speelt de spelregels na op een echte server: ./gradlew runGameTestServer
+		gameTestServer {
+			mods {
+				sinterklaas { source sourceSets.gametest }
+			}
+		}
+	}
+}
+
+dependencies {
+	minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+}
+
+tasks.withType(JavaCompile).configureEach {
+	options.encoding = 'UTF-8'
+	options.release = 17
+}
+
+processResources {
+	def eigenschappen = [version: modVersie, minecraft_version: minecraft_version, forge_version: forge_version]
+	inputs.properties eigenschappen
+	filesMatching('META-INF/mods.toml') { expand eigenschappen }
+
+	// Modellen, blockstates, plaatjes en vertalingen zijn dezelfde als in de 26.3-versie.
+	// Alleen de map 'items' niet: die item-definities bestaan pas sinds Minecraft 1.21.4.
+	from('../forge-26.3/src/main/resources/assets') {
+		into 'assets'
+		exclude 'sinterklaas/items/**'
+	}
+	// De bronplaatjes in ../textures blijven de enige waarheid: een plaatje vervangen = opnieuw bouwen.
+	from('../textures') {
+		include 'piet_roetveeg.png', 'piet_hoofd.png', 'piet_pakjes.png', 'piet_wegwijs.png', 'piet_koek.png', 'piet_malle.png'
+		rename 'piet_(.*)\\.png', '$1.png'
+		into 'assets/sinterklaas/textures/entity/piet'
+	}
+	from('../textures') {
+		include 'sint.png'
+		into 'assets/sinterklaas/textures/entity'
+	}
+	from('../textures') {
+		include 'model_*.png'
+		rename 'model_(.*)\\.png', '$1.png'
+		into 'assets/sinterklaas/textures/block'
+	}
+}
+
+jar {
+	from('../LICENSE')
+	manifest {
+		attributes([
+			'Specification-Title': 'sinterklaas',
+			'Specification-Version': '1',
+			'Implementation-Title': 'Sinterklaas',
+			'Implementation-Version': modVersie
+		])
+	}
+	finalizedBy 'reobfJar'
+}

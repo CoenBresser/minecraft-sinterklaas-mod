@@ -1,0 +1,7 @@
+{
+ "type": "minecraft:function",
+ "function": "sinterklaas:schoenpakje_mag_altijd_open",
+ "environment": "sinterklaas:dec4",
+ "structure": "forge:empty5x5x5",
+ "max_ticks": 100
+}

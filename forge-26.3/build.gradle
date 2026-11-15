@@ -1,0 +1,81 @@
+plugins {
+	id 'java'
+	id 'net.minecraftforge.gradle' version '[7.0.17,8)'
+}
+
+group = 'nl.sinterklaas'
+version = "${project.mod_version}+mc${project.minecraft_version}"
+base { archivesName = 'sinterklaas-forge' }
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(25)
+
+sourceSets {
+	// De spelregels (../core) hebben geen Minecraft nodig en worden hier gewoon meegecompileerd,
+	// zodat de mod één jar is. Hun eigen tests draaien in het project :core.
+	main {
+		java { srcDir '../core/src/main/java' }
+		resources { srcDir '../core/src/main/resources' }
+	}
+}
+
+minecraft {
+	runs {
+		configureEach {
+			workingDir = layout.projectDirectory.dir('run')
+			systemProperty 'eventbus.api.strictRuntimeChecks', 'true'
+			systemProperty 'forge.enabledGameTestNamespaces', 'sinterklaas'
+		}
+		register('client')
+		register('server') {
+			args '--nogui'
+		}
+		// Speelt de spelregels na op een echte server: ./gradlew :forge-26.3:runGameTestServer
+		register('gameTestServer')
+	}
+}
+
+repositories {
+	minecraft.mavenizer(it)
+	maven fg.forgeMaven
+	maven fg.minecraftLibsMaven
+	mavenCentral()
+}
+
+dependencies {
+	implementation minecraft.dependency("net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}")
+	annotationProcessor 'net.minecraftforge:eventbus-validator:7.0.6'
+}
+
+tasks.withType(JavaCompile).configureEach {
+	options.encoding = 'UTF-8'
+	options.release = 25
+}
+
+processResources {
+	def eigenschappen = [version: project.mod_version]
+	inputs.properties eigenschappen
+	filesMatching('META-INF/mods.toml') { expand eigenschappen }
+
+	// De bronplaatjes in ./textures blijven de enige waarheid: een plaatje vervangen = opnieuw bouwen.
+	from(rootProject.file('textures')) {
+		include 'piet_roetveeg.png', 'piet_hoofd.png', 'piet_pakjes.png', 'piet_wegwijs.png', 'piet_koek.png', 'piet_malle.png'
+		rename 'piet_(.*)\\.png', '$1.png'
+		into 'assets/sinterklaas/textures/entity/piet'
+	}
+	from(rootProject.file('textures')) {
+		include 'sint.png'
+		into 'assets/sinterklaas/textures/entity'
+	}
+	from(rootProject.file('textures')) {
+		include 'model_*.png'
+		rename 'model_(.*)\\.png', '$1.png'
+		into 'assets/sinterklaas/textures/block'
+	}
+}
+
+jar {
+	from(rootProject.file('LICENSE'))
+	// De speltests horen niet in de mod die spelers downloaden.
+	exclude 'nl/sinterklaas/test/**', 'data/sinterklaas/test_instance/**', 'data/sinterklaas/test_environment/**',
+		'data/sinterklaas/function/test/**'
+}

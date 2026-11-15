@@ -1,0 +1,7 @@
+{
+ "type": "minecraft:function",
+ "function": "sinterklaas:pakje_blijft_dicht_op_vier_december",
+ "environment": "sinterklaas:dec4",
+ "structure": "forge:empty5x5x5",
+ "max_ticks": 100
+}
