@@ -337,6 +337,19 @@ public class ProefTest implements FabricClientGameTest {
 			ok(gekregen == variant, "spawn-ei " + variant.id() + " geeft de " + variant.id() + "-Piet");
 			x += 2;
 		}
+		// Uit het gewone Piet-ei komt elke keer een willekeurige Piet
+		int soorten = server.computeOnServer(s -> {
+			java.util.Set<PietVariant> gezien = java.util.EnumSet.noneOf(PietVariant.class);
+			for (int n = 0; n < 30; n++) {
+				Piet piet = ModEntiteiten.PIET.spawn(s.overworld(), new ItemStack(ModItems.PIET_EI), speler(s),
+					new BlockPos(0, Y, -8), EntitySpawnReason.SPAWN_ITEM_USE, false, false);
+				gezien.add(piet.variant());
+				piet.discard();
+			}
+			return gezien.size();
+		});
+		ok(soorten >= 3, "het gewone Piet-ei geeft verschillende Pieten (" + soorten + " soorten uit 30 eieren)");
+
 		BlockPos sintPlek = new BlockPos(6, Y, 7);
 		boolean sintEr = server.computeOnServer(s -> {
 			Sint sint = ModEntiteiten.SINT.spawn(s.overworld(), new ItemStack(ModItems.SINT_EI), speler(s), sintPlek,
@@ -641,6 +654,7 @@ public class ProefTest implements FabricClientGameTest {
 		}
 		server.runCommand("item replace entity @p hotbar.6 with sinterklaas:sint_spawn_egg");
 		server.runCommand("item replace entity @p hotbar.7 with sinterklaas:mijter");
+		server.runCommand("item replace entity @p hotbar.8 with sinterklaas:piet_spawn_egg");
 		context.waitTicks(10);
 		context.takeScreenshot("fase2-7-spawn-eieren");
 	}
