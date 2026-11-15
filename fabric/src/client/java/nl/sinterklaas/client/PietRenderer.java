@@ -2,17 +2,21 @@ package nl.sinterklaas.client;
 
 import java.util.EnumMap;
 import java.util.Map;
+import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayers;
-import net.minecraft.client.model.monster.illager.IllagerModel;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
 import net.minecraft.resources.Identifier;
 import nl.sinterklaas.SinterklaasMod;
 import nl.sinterklaas.core.PietVariant;
 import nl.sinterklaas.entiteit.Piet;
 
-/** Tekent Piet met het model en de animaties van de vanilla pillager, met per variant een eigen textuur. */
-public class PietRenderer extends MobRenderer<Piet, PietRenderState, IllagerModel<PietRenderState>> {
+/**
+ * Tekent Piet als een gewoon mensfiguur, net als Sint: het model en de animaties van een speler,
+ * met per variant een eigen skin (textures/piet_&lt;variant&gt;.png, het gewone skin-formaat van 64x64).
+ * De muts of baret staat op de hoedlaag van de skin.
+ */
+public class PietRenderer extends HumanoidMobRenderer<Piet, PietRenderState, HumanoidModel<PietRenderState>> {
 	private static final Map<PietVariant, Identifier> TEXTUREN = new EnumMap<>(PietVariant.class);
 	static {
 		for (PietVariant v : PietVariant.values()) {
@@ -21,9 +25,7 @@ public class PietRenderer extends MobRenderer<Piet, PietRenderState, IllagerMode
 	}
 
 	public PietRenderer(EntityRendererProvider.Context context) {
-		super(context, new IllagerModel<>(context.bakeLayer(ModelLayers.PILLAGER)), 0.5F);
-		// De pillager verbergt zijn hoedlaag; Piet heeft daar juist zijn baret met veer.
-		this.model.getHat().visible = true;
+		super(context, new HumanoidModel<>(context.bakeLayer(ModelLayers.PLAYER)), 0.5F);
 	}
 
 	@Override
@@ -35,10 +37,6 @@ public class PietRenderer extends MobRenderer<Piet, PietRenderState, IllagerMode
 	public void extractRenderState(Piet piet, PietRenderState staat, float deeltik) {
 		super.extractRenderState(piet, staat, deeltik);
 		staat.variant = piet.variant();
-		staat.isRiding = piet.isPassenger();
-		staat.mainArm = piet.getMainArm();
-		staat.attackAnim = piet.getAttackAnim(deeltik);
-		staat.isAggressive = false;
 	}
 
 	@Override
