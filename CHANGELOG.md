@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.7.0](https://github.com/CoenBresser/minecraft-sinterklaas-mod/compare/v0.6.0...v0.7.0) (2026-11-15)
+
+
+### Functionaliteit
+
+* lever modpacks voor CurseForge, voor Fabric 26.2 en Forge 1.20.1 ([5f5ca30](https://github.com/CoenBresser/minecraft-sinterklaas-mod/commit/5f5ca3019402caf97eb382c950615bae97e32dbc))
+* lever modpacks voor CurseForge, voor Fabric 26.2 en Forge 1.20.1 ([ff08090](https://github.com/CoenBresser/minecraft-sinterklaas-mod/commit/ff0809046d9e1bedf1fd2f18e130961cbc89888c))
+
 ## [0.6.0](https://github.com/CoenBresser/minecraft-sinterklaas-mod/compare/v0.5.0...v0.6.0) (2026-11-15)
 
 
