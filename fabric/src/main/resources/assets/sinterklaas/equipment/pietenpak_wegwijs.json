@@ -1,0 +1,14 @@
+{
+ "layers": {
+  "humanoid": [
+   {
+    "texture": "sinterklaas:pietenpak_wegwijs"
+   }
+  ],
+  "humanoid_leggings": [
+   {
+    "texture": "sinterklaas:pietenpak_wegwijs"
+   }
+  ]
+ }
+}

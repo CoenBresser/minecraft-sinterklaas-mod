@@ -1,0 +1,13 @@
+{
+ "type": "minecraft:crafting_shapeless",
+ "category": "equipment",
+ "ingredients": [
+  "minecraft:iron_chestplate",
+  "minecraft:cyan_wool",
+  "sinterklaas:lint"
+ ],
+ "result": {
+  "id": "sinterklaas:pietenpak_wegwijs_jasje",
+  "count": 1
+ }
+}

@@ -1,0 +1,19 @@
+{
+ "type": "minecraft:crafting_shapeless",
+ "category": "equipment",
+ "ingredients": [
+  {
+   "item": "minecraft:iron_chestplate"
+  },
+  {
+   "item": "minecraft:green_wool"
+  },
+  {
+   "item": "sinterklaas:lint"
+  }
+ ],
+ "result": {
+  "item": "sinterklaas:pietenpak_pakjes_jasje",
+  "count": 1
+ }
+}

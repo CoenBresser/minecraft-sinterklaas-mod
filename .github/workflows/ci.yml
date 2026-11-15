@@ -28,6 +28,19 @@ jobs:
 
       - uses: gradle/actions/setup-gradle@v4
 
+      # The generated assets (models, pictures, recipes, loot tables) must match what
+      # tools/maak_assets.py makes. Otherwise the build and tests can pass while the next run of
+      # the script silently changes them. Pictures are compared by pixels, not bytes.
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Check the generated assets
+        run: |
+          pip install pillow==12.3.0
+          python3 tools/maak_assets.py
+          python3 tools/controleer_assets.py
+
       - name: Build Fabric 26.2 and unit tests
         run: ./gradlew build
 

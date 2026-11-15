@@ -34,6 +34,7 @@ public class SinterklaasMod {
 		ModEntiteiten.registreer(modBus);
 
 		MinecraftForge.EVENT_BUS.addListener(KistLoot::bijLaden);
+		MinecraftForge.EVENT_BUS.addListener(PietenpakBonus::bijTik);
 		MinecraftForge.EVENT_BUS.addListener((RegisterCommandsEvent e) -> SinterklaasCommando.registreer(e.getDispatcher()));
 		// Een testdatum hoort bij één speelsessie: na het stoppen van de server geldt weer de echte datum.
 		MinecraftForge.EVENT_BUS.addListener((ServerStoppedEvent e) -> KLOK.reset());

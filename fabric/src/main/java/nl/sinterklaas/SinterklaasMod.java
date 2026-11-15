@@ -29,6 +29,7 @@ public class SinterklaasMod implements ModInitializer {
 		ModBlokken.registreer();
 		ModItems.registreer();
 		KistLoot.registreer();
+		PietenpakBonus.registreer();
 		CommandRegistrationCallback.EVENT.register((dispatcher, context, omgeving) -> SinterklaasCommando.registreer(dispatcher));
 		// Een testdatum hoort bij één speelsessie: na het stoppen van de server geldt weer de echte datum.
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> KLOK.reset());

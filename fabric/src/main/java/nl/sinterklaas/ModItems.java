@@ -23,10 +23,15 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.item.component.TypedEntityData;
+import net.minecraft.world.item.equipment.ArmorMaterial;
+import net.minecraft.world.item.equipment.ArmorMaterials;
+import net.minecraft.world.item.equipment.ArmorType;
+import net.minecraft.world.item.equipment.EquipmentAssets;
 import net.minecraft.world.item.equipment.Equippable;
 import net.minecraft.world.level.block.Block;
 import nl.sinterklaas.core.Namen;
 import nl.sinterklaas.core.PietVariant;
+import nl.sinterklaas.core.PietenpakRegels;
 import nl.sinterklaas.item.GedichtjeItem;
 import nl.sinterklaas.item.PepernootItem;
 import nl.sinterklaas.item.StafItem;
@@ -79,6 +84,32 @@ public final class ModItems {
 			}));
 		}
 	}
+	/**
+	 * Het Pietenpak: voor elke Piet een muts, jasje, broek en schoenen in zijn eigen kleuren.
+	 * Even sterk als ijzer (en te repareren met ijzer); de plaatjes staan in equipment/pietenpak_<piet>.json.
+	 * De bonus voor het hele pak staat in PietenpakBonus.
+	 */
+	public static final Map<PietVariant, Map<PietenpakRegels.Deel, Item>> PIETENPAK = new EnumMap<>(PietVariant.class);
+	static {
+		ArmorMaterial ijzer = ArmorMaterials.IRON;
+		for (PietVariant variant : PietVariant.values()) {
+			ArmorMaterial pak = new ArmorMaterial(ijzer.durability(), ijzer.defense(), ijzer.enchantmentValue(),
+				ijzer.equipSound(), ijzer.toughness(), ijzer.knockbackResistance(), ijzer.repairIngredient(),
+				ResourceKey.create(EquipmentAssets.ROOT_ID, SinterklaasMod.id("pietenpak_" + variant.id())));
+			Map<PietenpakRegels.Deel, Item> delen = new EnumMap<>(PietenpakRegels.Deel.class);
+			for (PietenpakRegels.Deel deel : PietenpakRegels.Deel.values()) {
+				ArmorType soort = switch (deel) {
+					case MUTS -> ArmorType.HELMET;
+					case JASJE -> ArmorType.CHESTPLATE;
+					case BROEK -> ArmorType.LEGGINGS;
+					case SCHOENEN -> ArmorType.BOOTS;
+				};
+				delen.put(deel, registreer(PietenpakRegels.naam(variant, deel), p -> new Item(p.humanoidArmor(pak, soort))));
+			}
+			PIETENPAK.put(variant, delen);
+		}
+	}
+
 	public static final Item SINT_EI = registreer("sint_spawn_egg", p -> new SpawnEggItem(p.spawnEgg(ModEntiteiten.SINT)));
 
 	public static final CreativeModeTab TABBLAD = Registry.register(
@@ -94,6 +125,9 @@ public final class ModItems {
 				}
 				uitvoer.accept(new ItemStack(PIET_EI));
 				for (Item ei : PIET_EIEREN.values()) uitvoer.accept(new ItemStack(ei));
+				for (Map<PietenpakRegels.Deel, Item> pak : PIETENPAK.values()) {
+					for (Item deel : pak.values()) uitvoer.accept(new ItemStack(deel));
+				}
 			})
 			.build()
 	);
