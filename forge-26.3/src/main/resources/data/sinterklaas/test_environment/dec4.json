@@ -1,5 +1,0 @@
-{
- "type": "minecraft:function",
- "setup": "sinterklaas:test/dec4",
- "teardown": "sinterklaas:test/reset"
-}

@@ -1,5 +1,5 @@
 // De Forge-versie (Minecraft 1.20.1) is een eigen Gradle-build: ForgeGradle 6 werkt met Gradle 8
-// en Java 17, de 26.3-versie met Gradle 9 en Java 25.
+// en Java 17, de Fabric-versie (Minecraft 26.2) met Gradle 9 en Java 25.
 // Bouwen: cd forge-1.20.1 && ./gradlew build
 pluginManagement {
 	repositories {

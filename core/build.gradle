@@ -1,4 +1,4 @@
-// De spelregels: geen Minecraft- of Forge-afhankelijkheden.
+// De spelregels: geen Minecraft-, Fabric- of Forge-afhankelijkheden.
 // Java 17 als doel, zodat ook de versie voor Minecraft 1.20.1 (Forge 47, Java 17) ze kan gebruiken.
 plugins { id 'java-library' }
 group = 'nl.sinterklaas'

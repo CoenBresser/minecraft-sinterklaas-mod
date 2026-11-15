@@ -1,7 +1,0 @@
-{
- "type": "minecraft:function",
- "function": "sinterklaas:pakje_gaat_open_op_vijf_december",
- "environment": "sinterklaas:dec5",
- "structure": "forge:empty5x5x5",
- "max_ticks": 100
-}

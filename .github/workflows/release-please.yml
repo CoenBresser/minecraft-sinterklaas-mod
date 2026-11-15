@@ -34,7 +34,7 @@ jobs:
           config-file: .github/release-please/config.json
           manifest-file: .github/release-please/manifest.json
 
-  # A merged release PR is a release: build both jars at that tag and attach them to the
+  # A merged release PR is a release: build both versions at that tag and attach the modpacks and jars to the
   # GitHub release, so players can download them without building.
   publiceer:
     needs: release-please
@@ -48,13 +48,11 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: |
-            8
-            25
+          java-version: 25
 
       - uses: gradle/actions/setup-gradle@v4
 
-      - name: Build the 26.3 jar
+      - name: Build the Fabric 26.2 jar
         run: ./gradlew build
 
       - uses: actions/setup-java@v4
@@ -62,11 +60,18 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Build the 1.20.1 jar
+      - name: Build the Forge 1.20.1 jar
         working-directory: forge-1.20.1
         run: ./gradlew build
 
-      - name: Attach the jars to the release
+      - name: Pack the modpacks
+        run: python3 tools/maak_modpacks.py
+
+      # The modpacks are what players import in the CurseForge app; the loose jars are
+      # for an existing profile and for the server, which downloads them by URL.
+      - name: Attach the modpacks and jars to the release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release upload "${{ needs.release-please.outputs.tag_name }}" forge-26.3/build/libs/*.jar forge-1.20.1/build/libs/*.jar --clobber
+        run: >-
+          gh release upload "${{ needs.release-please.outputs.tag_name }}"
+          build/modpacks/*.zip fabric/build/libs/*.jar forge-1.20.1/build/libs/*.jar --clobber

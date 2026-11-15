@@ -8,29 +8,27 @@ on:
   # Called by the release workflow on every push to main.
   workflow_call:
 
-# The mod is built for two Minecraft versions, each with its own toolchain:
-#   forge-26.3/    Minecraft 26.3,   Forge 66.1.8,  ForgeGradle 7, Gradle 9, Java 25 (root build)
+# The mod is built for the two setups the server runs, each with its own toolchain:
+#   fabric/        Minecraft 26.2,   Fabric,        Loom,          Gradle 9, Java 25 (root build)
 #   forge-1.20.1/  Minecraft 1.20.1, Forge 47.4.10, ForgeGradle 6, Gradle 8, Java 17 (its own build)
 
 jobs:
-  # Builds both mod jars and runs the unit tests of the game rules in core/
-  # (4 and 5 December, time zone, season, shoe).
+  # Builds both mod jars, runs the unit tests of the game rules in core/
+  # (4 and 5 December, time zone, season, shoe) and packs the CurseForge modpacks.
   verify:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      # Minecraft 26.3 needs Java 25. ForgeGradle 7 also runs one of its tools on Java 8.
+      # Minecraft 26.2 needs Java 25.
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: |
-            8
-            25
+          java-version: 25
 
       - uses: gradle/actions/setup-gradle@v4
 
-      - name: Build 26.3 and unit tests
+      - name: Build Fabric 26.2 and unit tests
         run: ./gradlew build
 
       # Minecraft 1.20.1 needs Java 17.
@@ -39,22 +37,28 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Build 1.20.1
+      - name: Build Forge 1.20.1
         working-directory: forge-1.20.1
         run: ./gradlew build
 
-      - name: Upload the mod jars
+      # One importable zip per version for the CurseForge app (tools/maak_modpacks.py).
+      - name: Pack the modpacks
+        run: python3 tools/maak_modpacks.py
+
+      - name: Upload the modpacks and mod jars
         uses: actions/upload-artifact@v4
         with:
-          name: sinterklaas-mod-jars
+          name: sinterklaas-mod
           path: |
-            forge-26.3/build/libs/*.jar
+            build/modpacks/*.zip
+            fabric/build/libs/*.jar
             forge-1.20.1/build/libs/*.jar
           retention-days: 7
 
-  # Starts a real Forge game test server for each Minecraft version and plays through
-  # the rules (SpelTest.java in each module). Runs after `verify` so a compile or unit
-  # test failure fails fast without first paying for two server starts.
+  # Plays through the rules in the real game. Fabric: a real Minecraft client on a
+  # virtual screen (fabric/src/gametest), with screenshots. Forge 1.20.1: a game test
+  # server (forge-1.20.1/src/gametest). Runs after `verify` so a compile or unit test
+  # failure fails fast without first paying for a full client start.
   #
   # Skipped while a PR is still a draft, and on release-please's PR: that one only
   # touches CHANGELOG.md, gradle.properties and the manifest, on top of a main whose
@@ -72,20 +76,30 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: |
-            8
-            25
+          java-version: 25
 
       - uses: gradle/actions/setup-gradle@v4
 
-      - name: Game tests 26.3
-        run: ./gradlew :forge-26.3:runGameTestServer
+      # The runner has no graphics card: Mesa renders in software.
+      - name: Client game test (Fabric 26.2)
+        run: xvfb-run -a --server-args="-screen 0 1280x720x24" ./gradlew :fabric:runClientGameTest
+        env:
+          LIBGL_ALWAYS_SOFTWARE: "1"
+
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: speltest-screenshots
+          path: fabric/build/run/clientGameTest/screenshots/
+          retention-days: 7
+          if-no-files-found: ignore
 
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
 
-      - name: Game tests 1.20.1
+      - name: Game tests (Forge 1.20.1)
         working-directory: forge-1.20.1
         run: ./gradlew runGameTestServer

@@ -68,9 +68,9 @@ processResources {
 	inputs.properties eigenschappen
 	filesMatching('META-INF/mods.toml') { expand eigenschappen }
 
-	// Modellen, blockstates, plaatjes en vertalingen zijn dezelfde als in de 26.3-versie.
+	// Modellen, blockstates, plaatjes en vertalingen zijn dezelfde als in de Fabric-versie.
 	// Alleen de map 'items' niet: die item-definities bestaan pas sinds Minecraft 1.21.4.
-	from('../forge-26.3/src/main/resources/assets') {
+	from('../fabric/src/main/resources/assets') {
 		into 'assets'
 		exclude 'sinterklaas/items/**'
 	}
