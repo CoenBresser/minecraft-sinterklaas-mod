@@ -1,7 +1,0 @@
-{
- "type": "minecraft:function",
- "function": "sinterklaas:soms_zit_er_een_pakje_in_een_kist",
- "environment": "sinterklaas:dec5",
- "structure": "forge:empty5x5x5",
- "max_ticks": 100
-}

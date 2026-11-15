@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "id": "sinterklaas-test",
+  "version": "1.0.0",
+  "name": "Sinterklaas (tests)",
+  "environment": "*",
+  "entrypoints": {
+    "fabric-client-gametest": ["nl.sinterklaas.test.ProefTest"]
+  }
+}

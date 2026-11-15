@@ -1,0 +1,81 @@
+{
+ "type": "minecraft:block",
+ "pools": [
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "sinterklaas:bord"
+    }
+   ],
+   "conditions": [
+    {
+     "condition": "minecraft:survives_explosion"
+    }
+   ]
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "sinterklaas:pepernoot",
+     "functions": [
+      {
+       "function": "minecraft:set_count",
+       "count": 2,
+       "conditions": [
+        {
+         "condition": "minecraft:block_state_property",
+         "block": "sinterklaas:bord",
+         "properties": {
+          "pepernoten": "2"
+         }
+        }
+       ]
+      },
+      {
+       "function": "minecraft:set_count",
+       "count": 3,
+       "conditions": [
+        {
+         "condition": "minecraft:block_state_property",
+         "block": "sinterklaas:bord",
+         "properties": {
+          "pepernoten": "3"
+         }
+        }
+       ]
+      },
+      {
+       "function": "minecraft:set_count",
+       "count": 4,
+       "conditions": [
+        {
+         "condition": "minecraft:block_state_property",
+         "block": "sinterklaas:bord",
+         "properties": {
+          "pepernoten": "4"
+         }
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "conditions": [
+    {
+     "condition": "minecraft:inverted",
+     "term": {
+      "condition": "minecraft:block_state_property",
+      "block": "sinterklaas:bord",
+      "properties": {
+       "pepernoten": "0"
+      }
+     }
+    }
+   ]
+  }
+ ]
+}

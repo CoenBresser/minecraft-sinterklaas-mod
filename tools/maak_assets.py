@@ -14,11 +14,12 @@ from PIL import Image
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEX = os.path.join(ROOT, "textures")
-RES = os.path.join(ROOT, "forge-26.3/src/main/resources")
+RES = os.path.join(ROOT, "fabric/src/main/resources")
 ASSETS = os.path.join(RES, "assets/sinterklaas")
 DATA = os.path.join(RES, "data/sinterklaas")
-# De Forge-versie (Minecraft 1.20.1) deelt modellen, blockstates, plaatjes en vertalingen met de 26.3-versie
-# (forge-1.20.1/build.gradle kopieert ze). Alleen wat in 1.20.1 een ander formaat heeft, komt hier te staan.
+# De Forge-versie (Minecraft 1.20.1) deelt modellen, blockstates, plaatjes en vertalingen met de
+# Fabric-versie (forge-1.20.1/build.gradle kopieert ze). Alleen wat in 1.20.1 een ander formaat
+# heeft, komt hier te staan.
 FORGE_RES = os.path.join(ROOT, "forge-1.20.1/src/main/resources")
 VARIANTEN = ["roetveeg", "hoofd", "pakjes", "wegwijs", "koek", "malle"]
 
@@ -376,102 +377,62 @@ def spawn_ei(textuur, naam):
 
 # ---------------------------------------------------------------- data
 
-# Loot-tables bestaan in twee schrijfwijzen. Minecraft 26.3 schrijft voorwaarden als
-#   "condition": {"type": ...}   en bewerkingen als   "modifier": [{"type": ...}]
-# Minecraft 1.20.1 schrijft
-#   "conditions": [{"condition": ...}]   en   "functions": [{"function": ...}]
-# De functies hieronder maken de tabellen één keer; 'oud' kiest de schrijfwijze van 1.20.1.
-
-def voorwaarde(oud, soort, **velden):
-    return {("condition" if oud else "type"): f"minecraft:{soort}", **velden}
-
-def blok_staat(oud, blok, **staat):
-    """Het blok heeft deze blokstatus (bijvoorbeeld inhoud=pakje)."""
-    if oud:
-        return voorwaarde(oud, "block_state_property", block=blok, properties=staat)
-    return voorwaarde(oud, "match_block", blocks=blok, state=staat)
-
-def met_voorwaarde(oud, ding, v):
-    ding.update({"conditions": [v]} if oud else {"condition": v})
-    return ding
-
-def zet_aantal(oud, aantal, als=None):
-    f = {("function" if oud else "type"): "minecraft:set_count", "count": aantal}
-    return met_voorwaarde(oud, f, als) if als else f
-
-def met_bewerkingen(oud, ding, bewerkingen):
-    ding["functions" if oud else "modifier"] = bewerkingen
-    return ding
-
-def item(oud, naam, gewicht=1, min_=None, max_=None):
+def item(naam, gewicht=1, min_=None, max_=None):
     e = {"type": "minecraft:item", "name": naam, "weight": gewicht}
     if min_ is not None:
-        met_bewerkingen(oud, e, [zet_aantal(oud, {"type": "minecraft:uniform", "min": min_, "max": max_})])
+        e["functions"] = [{"function": "minecraft:set_count",
+                           "count": {"type": "minecraft:uniform", "min": min_, "max": max_}}]
     return e
 
-def loot(uit, oud=False):
-    """Schrijft alle loot-tables naar de map 'uit', in de schrijfwijze van 26.3 of (oud=True) van 1.20.1."""
-    def zelf(naam):
-        return {"type": "minecraft:block", "pools": [met_voorwaarde(oud, {
-            "rolls": 1, "entries": [{"type": "minecraft:item", "name": f"sinterklaas:{naam}"}]},
-            voorwaarde(oud, "survives_explosion"))]}
-    schrijf(f"{uit}/blocks/pakje.json", zelf("pakje"))
-    schrijf(f"{uit}/blocks/schoenpakje.json", zelf("schoenpakje"))
+def loot():
+    zelf = lambda naam: {"type": "minecraft:block", "pools": [{
+        "rolls": 1, "entries": [{"type": "minecraft:item", "name": f"sinterklaas:{naam}"}],
+        "conditions": [{"condition": "minecraft:survives_explosion"}]}]}
+    schrijf(f"{DATA}/loot_table/blocks/pakje.json", zelf("pakje"))
+    schrijf(f"{DATA}/loot_table/blocks/schoenpakje.json", zelf("schoenpakje"))
     schoen = zelf("schoen")
     # Wie een schoen afbreekt, krijgt ook terug wat erin zat (het briefje gaat verloren).
     for inhoud, wat in (("pakje", "sinterklaas:schoenpakje"), ("wortel", "minecraft:carrot")):
-        schoen["pools"].append(met_voorwaarde(oud, {"rolls": 1, "entries": [{"type": "minecraft:item", "name": wat}]},
-            blok_staat(oud, "sinterklaas:schoen", inhoud=inhoud)))
-    schrijf(f"{uit}/blocks/schoen.json", schoen)
+        schoen["pools"].append({"rolls": 1, "entries": [{"type": "minecraft:item", "name": wat}],
+            "conditions": [{"condition": "minecraft:block_state_property", "block": "sinterklaas:schoen",
+                            "properties": {"inhoud": inhoud}}]})
+    schrijf(f"{DATA}/loot_table/blocks/schoen.json", schoen)
     bord = zelf("bord")
-    # Wie een bord afbreekt, krijgt ook de pepernoten terug die erop lagen.
-    noten = met_bewerkingen(oud, {"type": "minecraft:item", "name": "sinterklaas:pepernoot"},
-        [zet_aantal(oud, n, als=blok_staat(oud, "sinterklaas:bord", pepernoten=str(n))) for n in range(2, 5)])
-    bord["pools"].append(met_voorwaarde(oud, {"rolls": 1, "entries": [noten]},
-        voorwaarde(oud, "inverted", term=blok_staat(oud, "sinterklaas:bord", pepernoten="0"))))
-    schrijf(f"{uit}/blocks/bord.json", bord)
+    bord["pools"].append({"rolls": 1, "entries": [{"type": "minecraft:item", "name": "sinterklaas:pepernoot",
+        "functions": [{"function": "minecraft:set_count", "count": n,
+                       "conditions": [{"condition": "minecraft:block_state_property", "block": "sinterklaas:bord",
+                                       "properties": {"pepernoten": str(n)}}]} for n in range(2, 5)]}],
+        "conditions": [{"condition": "minecraft:inverted", "term": {
+            "condition": "minecraft:block_state_property", "block": "sinterklaas:bord",
+            "properties": {"pepernoten": "0"}}}]})
+    schrijf(f"{DATA}/loot_table/blocks/bord.json", bord)
 
     # Wat zit er in een pakje? Hoe hoger 'weight', hoe vaker.
-    schrijf(f"{uit}/gameplay/pakje_inhoud.json", {
+    schrijf(f"{DATA}/loot_table/gameplay/pakje_inhoud.json", {
         "type": "minecraft:chest",
         "pools": [
             {"rolls": 1, "entries": [
                 # meestal: pepernoten en snoep
-                item(oud, "sinterklaas:pepernoot", 60, 4, 8),
-                item(oud, "minecraft:cookie", 25, 2, 4),
+                item("sinterklaas:pepernoot", 60, 4, 8),
+                item("minecraft:cookie", 25, 2, 4),
                 # zeldzaam: eigen Sinterklaas-items
-                item(oud, "sinterklaas:chocoladeletter", 8),
-                item(oud, "sinterklaas:zakje_pepernoten", 6),
-                item(oud, "sinterklaas:mijter", 3),
-            ] + [item(oud, f"sinterklaas:piet_{v}_spawn_egg", 1) for v in VARIANTEN]},
+                item("sinterklaas:chocoladeletter", 8),
+                item("sinterklaas:zakje_pepernoten", 6),
+                item("sinterklaas:mijter", 3),
+            ] + [item(f"sinterklaas:piet_{v}_spawn_egg", 1) for v in VARIANTEN]},
             # zeer zeldzaam: een gedichtje of grap (verschijnt in de chat)
-            met_voorwaarde(oud, {"rolls": 1, "entries": [item(oud, "sinterklaas:gedichtje")]},
-                voorwaarde(oud, "random_chance", chance=0.03)),
+            {"rolls": 1, "entries": [item("sinterklaas:gedichtje")],
+             "conditions": [{"condition": "minecraft:random_chance", "chance": 0.03}]},
         ]})
     # Wat een Piet af en toe laat vallen.
-    schrijf(f"{uit}/gameplay/piet_cadeau.json", {
+    schrijf(f"{DATA}/loot_table/gameplay/piet_cadeau.json", {
         "type": "minecraft:gift",
-        "pools": [{"rolls": 1, "entries": [item(oud, "sinterklaas:pakje", 1), item(oud, "sinterklaas:pepernoot", 2, 1, 3)]}]})
+        "pools": [{"rolls": 1, "entries": [item("sinterklaas:pakje", 1), item("sinterklaas:pepernoot", 2, 1, 3)]}]})
     # Extra kans op een pakje in kisten (dorpshuizen, kerkers, mijnschachten).
-    schrijf(f"{uit}/chests/kist_extra.json", {
+    schrijf(f"{DATA}/loot_table/chests/kist_extra.json", {
         "type": "minecraft:chest",
-        "pools": [met_voorwaarde(oud, {"rolls": 1, "entries": [item(oud, "sinterklaas:pakje")]},
-            voorwaarde(oud, "random_chance", chance=0.1))]})
-
-# In deze kisten zit soms een pakje.
-KISTEN = ["chests/village/village_plains_house", "chests/village/village_desert_house", "chests/village/village_taiga_house",
-          "chests/village/village_snowy_house", "chests/village/village_savanna_house", "chests/simple_dungeon",
-          "chests/abandoned_mineshaft"]
-
-def kist_loot():
-    """26.3 (Forge): een 'global loot modifier' rolt bij deze kisten ook de tabel kist_extra (zie KistLoot.java)."""
-    schrijf(f"{RES}/data/forge/loot_modifiers/global_loot_modifiers.json",
-            {"replace": False, "entries": ["sinterklaas:kist_pakje"]})
-    schrijf(f"{DATA}/loot_modifiers/kist_pakje.json", {
-        "type": "sinterklaas:kist_pakje",
-        "conditions": [{"type": "minecraft:any_of", "terms": [
-            {"type": "forge:loot_table_id", "loot_table_id": f"minecraft:{k}"} for k in KISTEN]}],
-        "loot_table": "sinterklaas:chests/kist_extra"})
+        "pools": [{"rolls": 1, "entries": [item("sinterklaas:pakje")],
+                   "conditions": [{"condition": "minecraft:random_chance", "chance": 0.1}]}]})
 
 def recepten():
     def vormloos(naam, ingredienten, uit, aantal=1):
@@ -495,54 +456,13 @@ def recepten():
             "key": {"K": "minecraft:clay_ball", "B": "minecraft:blue_dye"}, "pattern": ["KBK"],
             "result": {"id": "sinterklaas:bord", "count": 2}})
 
-# ---------------------------------------------------------------- speltests (Minecraft 26.3)
-
-# Bij elke test in forge-26.3/.../test/SpelTest.java: op welke testdatum hij speelt en hoe lang hij mag duren (in tikken).
-SPELTESTS = {
-    "pakje_blijft_dicht_op_vier_december": ("dec4", 100),
-    "schoenpakje_mag_altijd_open": ("dec4", 100),
-    "pakje_gaat_open_op_vijf_december": ("dec5", 100),
-    "schoen_met_wortel_geeft_pakje": ("dec5", 300),
-    "schoen_zonder_wortel_geeft_briefje": ("dec5", 300),
-    "bord_met_pepernoten": ("dec5", 100),
-    "pepernoot_geeft_half_hartje": ("dec5", 100),
-    "uit_elk_ei_komt_de_goede_piet": ("dec5", 100),
-    "piet_laat_iets_vallen": ("dec5", 100),
-    "staf_roept_piet": ("dec5", 100),
-    "sint_draagt_mijter_en_staf": ("dec5", 200),
-    "op_vijf_december_blijft_iedereen": ("dec5", 250),
-    "loot_en_recepten_zijn_geladen": ("dec5", 100),
-    "soms_zit_er_een_pakje_in_een_kist": ("dec5", 100),
-    "afbreken_geeft_de_inhoud_terug": ("dec5", 100),
-    "in_een_pakje_zit_meestal_lekkers": ("dec5", 100),
-    "op_zes_december_vertrekt_iedereen": ("dec6", 250),
-    "buiten_het_seizoen_spawnt_niemand_vanzelf": ("dec6", 100),
-}
-TESTDATUMS = {"dec4": "2026-12-04", "dec5": "2026-12-05", "dec6": "2026-12-06"}
-
-def speltests():
-    """Testdatums (als omgeving met een setup-commando) en per test een test_instance-bestand."""
-    def functie(naam, commando):
-        pad = f"{DATA}/function/test/{naam}.mcfunction"
-        os.makedirs(os.path.dirname(pad), exist_ok=True)
-        with open(pad, "w") as f:
-            f.write(commando + "\n")
-    functie("reset", "sinterklaas datum reset")
-    for omgeving, datum in TESTDATUMS.items():
-        functie(omgeving, f"sinterklaas datum {datum}")
-        schrijf(f"{DATA}/test_environment/{omgeving}.json", {"type": "minecraft:function",
-                "setup": f"sinterklaas:test/{omgeving}", "teardown": "sinterklaas:test/reset"})
-    for naam, (omgeving, tikken) in SPELTESTS.items():
-        schrijf(f"{DATA}/test_instance/{naam}.json", {"type": "minecraft:function", "function": f"sinterklaas:{naam}",
-                "environment": f"sinterklaas:{omgeving}", "structure": "forge:empty5x5x5", "max_ticks": tikken})
-
 # ---------------------------------------------------------------- Forge (Minecraft 1.20.1)
 
 def forge():
     """Zet de data van hierboven om naar het formaat van Minecraft 1.20.1.
 
     - recepten: map 'recipes', ingrediënten als {"item": ...}, resultaat met "item" in plaats van "id"
-    - loot-tables: map 'loot_tables', in de oude schrijfwijze (zie loot())
+    - loot-tables: map 'loot_tables' (de inhoud is gelijk)
     - voorwerpen: 1.20.1 kent de map 'items' niet en zoekt voor elk voorwerp models/item/<naam>.json;
       voor de blokken (pakje, schoen, bord) maken we daar een verwijzing naar het blokmodel.
     """
@@ -562,7 +482,10 @@ def forge():
         recept["result"] = {"item": uit["id"], "count": uit["count"]}
         schrijf(f"{FORGE_RES}/data/sinterklaas/recipes/{bestand}", recept)
 
-    loot(f"{FORGE_RES}/data/sinterklaas/loot_tables", oud=True)
+    for map_, _, bestanden in os.walk(f"{DATA}/loot_table"):
+        for bestand in sorted(bestanden):
+            rel = os.path.relpath(os.path.join(map_, bestand), f"{DATA}/loot_table")
+            schrijf(f"{FORGE_RES}/data/sinterklaas/loot_tables/{rel}", lees(os.path.join(map_, bestand)))
 
     for bestand in sorted(os.listdir(f"{ASSETS}/items")):
         naam = bestand[:-len(".json")]
@@ -576,6 +499,6 @@ if __name__ == "__main__":
     for v in VARIANTEN:
         spawn_ei(f"piet_{v}.png", f"piet_{v}")
     spawn_ei("sint.png", "sint")
-    loot(f"{DATA}/loot_table"); kist_loot(); recepten(); speltests()
+    loot(); recepten()
     forge()
     print("klaar")
