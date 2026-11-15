@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.0](https://github.com/CoenBresser/minecraft-sinterklaas-mod/compare/v0.5.0...v0.6.0) (2026-11-15)
+
+
+### Functionaliteit
+
+* **forge:** maak de mod voor Forge, voor Minecraft 26.3 en 1.20.1 ([a9dc8ef](https://github.com/CoenBresser/minecraft-sinterklaas-mod/commit/a9dc8ef1423eb16cb34da855e31586bdcb00ef86))
+
 ## [0.5.0](https://github.com/CoenBresser/minecraft-sinterklaas-mod/compare/v0.4.0...v0.5.0) (2026-11-14)
 
 
