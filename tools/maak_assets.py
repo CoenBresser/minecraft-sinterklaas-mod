@@ -366,8 +366,20 @@ def kostuumkleuren(pad):
     stip = next((k for k, _ in tel.most_common() if sum(abs(p - q) for p, q in zip(k, basis)) > 150), (255, 255, 255))
     return basis, stip
 
+# De kleuren van de Piet-eieren liggen vast. Ze kwamen uit de kostuums toen de Pieten nog
+# pillager-plaatjes hadden; zo blijven de eieren hetzelfde nu de plaatjes speler-skins zijn.
+# Wil je de kleuren weer uit een (nieuw getekend) kostuum halen, haal de Piet dan uit dit lijstje.
+EI_KLEUREN = {
+    "piet_roetveeg": ((36, 60, 156), (180, 12, 36)),
+    "piet_hoofd": ((12, 36, 84), (228, 180, 60)),
+    "piet_pakjes": ((36, 108, 36), (180, 12, 36)),
+    "piet_wegwijs": ((12, 108, 132), (204, 108, 36)),
+    "piet_koek": ((108, 60, 36), (252, 228, 180)),
+    "piet_malle": ((108, 60, 156), (204, 156, 36)),
+}
+
 def spawn_ei(textuur, naam):
-    basis, stip = kostuumkleuren(os.path.join(TEX, textuur))
+    basis, stip = EI_KLEUREN.get(naam) or kostuumkleuren(os.path.join(TEX, textuur))
     kleuren = {"b": basis + (255,), "s": stip + (255,),
                "r": tuple(int(c * 0.55) for c in basis) + (255,),
                "l": tuple(min(255, int(c * 1.35) + 30) for c in basis) + (255,)}

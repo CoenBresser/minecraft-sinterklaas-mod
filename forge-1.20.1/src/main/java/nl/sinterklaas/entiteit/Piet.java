@@ -27,8 +27,8 @@ import nl.sinterklaas.core.PietVariant;
 import nl.sinterklaas.core.StafRegels;
 
 /**
- * Piet: ziet eruit en beweegt als een pillager, maar is vriendelijk.
- * Bewust geen subklasse van Pillager, zodat hij niet aanvalt en niet meedoet aan raids.
+ * Piet: een gewoon mensfiguur, net als Sint, en vriendelijk.
+ * Hij valt niet aan en doet niet mee aan raids.
  * Er is één entiteit-type; welke Piet het is staat in de variant.
  */
 public class Piet extends SinterklaasFiguur {
