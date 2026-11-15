@@ -54,9 +54,9 @@ Er zijn twee versies van de mod. Bij de [nieuwste release](https://github.com/Co
 2. Kies in de CurseForge-app bij Minecraft *Create Custom Profile* en dan *Import*, en wijs de zip aan.
 3. Er komt een nieuw profiel bij met de goede Minecraft-versie en modloader, en de mod er al in. Start het met *Play*.
 
-In het Fabric-modpack zit ook Fabric API, die de mod nodig heeft. De Forge-versie heeft verder niets nodig.
+Het Fabric-modpack haalt bij het importeren ook Fabric API binnen, die de mod nodig heeft. Dat downloadt de app zelf van CurseForge, dus je hebt daarbij internet nodig. De Forge-versie heeft verder niets nodig.
 
-> **De mod staat niet in de lijst *Mods* van het profiel. Dat is normaal.** De CurseForge-app toont in die lijst alleen mods die je via CurseForge zelf hebt binnengehaald. De Sinterklaas-mod staat niet op CurseForge, dus de app laat hem niet zien. Hij zit wel in het profiel en werkt gewoon. Controleren kan zo: klik bij het profiel op de drie puntjes, kies *Open Folder* (*Map openen*) en kijk in de map `mods`. Of start het spel: met Forge staat Sinterklaas in het titelscherm onder *Mods*.
+> **De Sinterklaas-mod staat niet in de lijst *Mods* van het profiel. Dat is normaal.** De CurseForge-app toont in die lijst alleen mods die hij zelf van CurseForge heeft gedownload, zoals Fabric API. De Sinterklaas-mod staat niet op CurseForge, dus de app laat hem niet zien. Hij zit wel in het profiel en werkt gewoon. Controleren kan zo: klik bij het profiel op de drie puntjes, kies *Open Folder* (*Map openen*) en kijk in de map `mods`. Of start het spel: met Forge staat Sinterklaas in het titelscherm onder *Mods*.
 
 ### Bestaand profiel: de jar erbij zetten
 
