@@ -375,6 +375,45 @@ def spawn_ei(textuur, naam):
     plat_item(naam + "_spawn_egg")
     print(f"  spawn-ei {naam}: basis {basis}, stip {stip}")
 
+def gewoon_piet_ei():
+    """Het ei waar een willekeurige Piet uit komt: rood, vol stipjes in allerlei kleuren.
+
+    De stipjes staan op willekeurige plekken, maar met een vaste beginwaarde, zodat het plaatje
+    bij elke keer draaien hetzelfde blijft.
+    """
+    import random
+    toeval = random.Random(512)
+    STIPKLEUREN = ["1", "2", "3", "4", "5", "6"]
+    rijen = [list(rij.replace("s", "b")) for rij in EI]
+    vrij = [(x, y) for y, rij in enumerate(rijen) for x, c in enumerate(rij) if c == "b"]
+    toeval.shuffle(vrij)
+    gezet = []
+    for x, y in vrij:
+        if len(gezet) == 16: break
+        if any(abs(x - a) <= 1 and abs(y - b) <= 1 for a, b in gezet): continue   # stipjes raken elkaar niet
+        rijen[y][x] = toeval.choice(STIPKLEUREN)
+        gezet.append((x, y))
+    basis = (200, 24, 36)
+    kleuren = {"b": basis + (255,), "r": (110, 10, 20, 255), "l": (240, 110, 110, 255),
+               "1": (255, 255, 255, 255), "2": (250, 210, 60, 255), "3": (70, 130, 240, 255),
+               "4": (80, 200, 90, 255), "5": (180, 110, 230, 255), "6": (255, 150, 40, 255)}
+    teken("piet_spawn_egg", ["".join(r) for r in rijen], kleuren)
+    plat_item("piet_spawn_egg")
+    print(f"  spawn-ei piet (willekeurig): rood met {len(gezet)} stipjes")
+
+def sint_ei():
+    """Het ei van Sinterklaas heeft de vorm van zijn mijter: rood, met een geel kruis en een gele rand."""
+    rijen = [
+        "................", ".......rr.......", "......rlbr......", ".....rlbbbr.....",
+        "....rlbggbbr....", "....rlbggbbr....", "...rlbbggbbbr...", "...rlggggggbr...",
+        "...rlggggggbr...", "...rlbbggbbbr...", "...rlbbggbbbr...", "...rlbbggbbbr...",
+        "...rggggggggr...", "....rggggggr....", ".....rrrrrr.....", "................",
+    ]
+    kleuren = {"b": (190, 20, 30, 255), "l": (220, 50, 55, 255), "r": (110, 8, 18, 255), "g": (240, 196, 60, 255)}
+    teken("sint_spawn_egg", rijen, kleuren)
+    plat_item("sint_spawn_egg")
+    print("  spawn-ei sint: mijter")
+
 # ---------------------------------------------------------------- data
 
 def item(naam, gewicht=1, min_=None, max_=None):
@@ -419,6 +458,7 @@ def loot():
                 item("sinterklaas:chocoladeletter", 8),
                 item("sinterklaas:zakje_pepernoten", 6),
                 item("sinterklaas:mijter", 3),
+                item("sinterklaas:piet_spawn_egg", 1),
             ] + [item(f"sinterklaas:piet_{v}_spawn_egg", 1) for v in VARIANTEN]},
             # zeer zeldzaam: een gedichtje of grap (verschijnt in de chat)
             {"rolls": 1, "entries": [item("sinterklaas:gedichtje")],
@@ -498,7 +538,8 @@ if __name__ == "__main__":
     pakje_modellen(); schoen_modellen(); bord_modellen(); mijter_model(); staf_model(); item_plaatjes()
     for v in VARIANTEN:
         spawn_ei(f"piet_{v}.png", f"piet_{v}")
-    spawn_ei("sint.png", "sint")
+    gewoon_piet_ei()
+    sint_ei()
     loot(); recepten()
     forge()
     print("klaar")
