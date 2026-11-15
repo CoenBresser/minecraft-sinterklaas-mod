@@ -2,20 +2,26 @@
 """Maakt van de gebouwde mod-jars modpacks die de CurseForge-app kan importeren.
 Draai vanuit de projectmap, nadat beide versies gebouwd zijn:  python3 tools/maak_modpacks.py
 
-Een modpack is een zip met een manifest.json (welke Minecraft-versie en welke modloader) en een
-map overrides/mods met de jars. Importeren in CurseForge maakt er een nieuw profiel van, met de
-goede versies al ingesteld.
+Een modpack is een zip met een manifest.json (welke Minecraft-versie, welke modloader en welke mods
+van CurseForge) en een map overrides/mods met jars die er zo in gaan. Importeren in CurseForge maakt
+er een nieuw profiel van, met de goede versies al ingesteld.
 
-- Fabric (Minecraft 26.2): de mod en Fabric API, die de mod nodig heeft.
-- Forge (Minecraft 1.20.1): alleen de mod; die heeft verder niets nodig.
+De CurseForge-app toont in de lijst Mods van een profiel alleen de mods die hij zelf downloadt, dus
+die in "files" van het manifest staan. Wat via overrides/mods meekomt werkt wel, maar staat niet in
+die lijst. Daarom:
+
+- Fabric (Minecraft 26.2): Fabric API, die de mod nodig heeft, staat in "files"; de app haalt die
+  van CurseForge. De mod zelf staat niet op CurseForge en gaat via overrides/mods.
+- Forge (Minecraft 1.20.1): alleen de mod, via overrides/mods; die heeft verder niets nodig.
 
 De zips komen in build/modpacks/.
 """
-import glob, json, os, sys, urllib.request, zipfile
+import glob, json, os, sys, zipfile
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 UIT = os.path.join(ROOT, "build/modpacks")
-FABRIC_MAVEN = "https://maven.fabricmc.net/net/fabricmc/fabric-api/fabric-api"
+# Fabric API op CurseForge: https://www.curseforge.com/minecraft/mc-mods/fabric-api
+FABRIC_API_CURSEFORGE_PROJECT = 306612
 
 def eigenschappen(pad):
     """Leest een gradle.properties als woordenboek."""
@@ -36,16 +42,11 @@ def mod_jar(map_):
         sys.exit(f"Verwacht precies één jar in {map_}/build/libs, gevonden: {jars or 'geen'}. Eerst bouwen?")
     return jars[0]
 
-def haal_fabric_api(versie):
-    """Downloadt Fabric API (Apache-2.0, mag meegeleverd worden) van de Maven-server van Fabric."""
-    naam = f"fabric-api-{versie}.jar"
-    doel = os.path.join(UIT, "download", naam)
-    if not os.path.exists(doel):
-        os.makedirs(os.path.dirname(doel), exist_ok=True)
-        urllib.request.urlretrieve(f"{FABRIC_MAVEN}/{versie}/{naam}", doel)
-    return doel
+def curseforge_mod(project, bestand):
+    """Een mod die de CurseForge-app zelf downloadt (een regel in "files" van het manifest)."""
+    return {"projectID": project, "fileID": int(bestand), "required": True}
 
-def modpack(bestand, naam, versie, minecraft, modloader, jars):
+def modpack(bestand, naam, versie, minecraft, modloader, jars, curseforge_mods=()):
     manifest = {
         "minecraft": {"version": minecraft, "modLoaders": [{"id": modloader, "primary": True}]},
         "manifestType": "minecraftModpack",
@@ -53,8 +54,8 @@ def modpack(bestand, naam, versie, minecraft, modloader, jars):
         "name": naam,
         "version": versie,
         "author": "De makers van de Sinterklaas-mod",
-        # Geen mods van CurseForge zelf: alles zit in overrides/mods.
-        "files": [],
+        # Mods die de app van CurseForge haalt; alleen die staan daarna in de lijst Mods van het profiel.
+        "files": list(curseforge_mods),
         "overrides": "overrides",
     }
     pad = os.path.join(UIT, bestand)
@@ -62,7 +63,8 @@ def modpack(bestand, naam, versie, minecraft, modloader, jars):
         z.writestr("manifest.json", json.dumps(manifest, indent=2) + "\n")
         for jar in jars:
             z.write(jar, "overrides/mods/" + os.path.basename(jar))
-    print(f"  {os.path.relpath(pad, ROOT)}: Minecraft {minecraft}, {modloader}, {len(jars)} jar(s)")
+    print(f"  {os.path.relpath(pad, ROOT)}: Minecraft {minecraft}, {modloader}, {len(jars)} jar(s), "
+          f"{len(curseforge_mods)} mod(s) van CurseForge")
 
 if __name__ == "__main__":
     hoofd = eigenschappen(os.path.join(ROOT, "gradle.properties"))
@@ -73,7 +75,8 @@ if __name__ == "__main__":
     modpack(f"sinterklaas-modpack-{versie}+fabric-mc{hoofd['minecraft_version']}.zip",
             f"Sinterklaas (Fabric {hoofd['minecraft_version']})", versie,
             hoofd["minecraft_version"], f"fabric-{hoofd['loader_version']}",
-            [mod_jar("fabric"), haal_fabric_api(hoofd["fabric_api_version"])])
+            [mod_jar("fabric")],
+            [curseforge_mod(FABRIC_API_CURSEFORGE_PROJECT, hoofd["fabric_api_curseforge_file"])])
     modpack(f"sinterklaas-modpack-{versie}+forge-mc{forge['minecraft_version']}.zip",
             f"Sinterklaas (Forge {forge['minecraft_version']})", versie,
             forge["minecraft_version"], f"forge-{forge['forge_version']}",

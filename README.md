@@ -54,16 +54,20 @@ Er zijn twee versies van de mod. Bij de [nieuwste release](https://github.com/Co
 2. Kies in de CurseForge-app bij Minecraft *Create Custom Profile* en dan *Import*, en wijs de zip aan.
 3. Er komt een nieuw profiel bij met de goede Minecraft-versie en modloader, en de mod er al in. Start het met *Play*.
 
-In het Fabric-modpack zit ook Fabric API, die de mod nodig heeft. De Forge-versie heeft verder niets nodig.
+Het Fabric-modpack haalt bij het importeren ook Fabric API binnen, die de mod nodig heeft. Dat downloadt de app zelf van CurseForge, dus je hebt daarbij internet nodig. De Forge-versie heeft verder niets nodig.
+
+> **De Sinterklaas-mod staat niet in de lijst *Mods* van het profiel. Dat is normaal.** De CurseForge-app toont in die lijst alleen mods die hij zelf van CurseForge heeft gedownload, zoals Fabric API. De Sinterklaas-mod staat niet op CurseForge, dus de app laat hem niet zien. Hij zit wel in het profiel en werkt gewoon. Controleren kan zo: klik bij het profiel op de drie puntjes, kies *Open Folder* (*Map openen*) en kijk in de map `mods`. Of start het spel: met Forge staat Sinterklaas in het titelscherm onder *Mods*.
 
 ### Bestaand profiel: de jar erbij zetten
 
-Importeren maakt altijd een nieuw profiel. Wil je de mod in een profiel dat je al hebt (bijvoorbeeld bij een bestaande wereld), dan:
+Importeren maakt altijd een nieuw profiel. Via de app kun je de mod niet aan een bestaand profiel toevoegen, want hij staat niet op CurseForge. Wil je de mod in een profiel dat je al hebt (bijvoorbeeld bij een bestaande wereld), zet dan de losse jar met de hand in het profiel:
 
 1. Controleer dat het profiel dezelfde Minecraft-versie en modloader heeft als in de tabel.
 2. Klik bij het profiel op de drie puntjes en kies *Open Folder* (*Map openen*).
 3. Zet de losse jar in de map `mods`. Voor Fabric moet **Fabric API** ook in het profiel staan (via *Add More Content* in de app).
 4. Start het profiel met *Play*.
+
+Ook hier staat de mod daarna niet in de lijst *Mods* van de app (zie hierboven), maar werkt hij wel.
 
 Een bestaande wereld blijft gewoon werken: de mod voegt alleen dingen toe.
 
