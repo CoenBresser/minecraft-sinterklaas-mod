@@ -1,0 +1,19 @@
+{
+ "type": "minecraft:crafting_shapeless",
+ "category": "equipment",
+ "ingredients": [
+  {
+   "item": "minecraft:iron_boots"
+  },
+  {
+   "item": "minecraft:cyan_wool"
+  },
+  {
+   "item": "sinterklaas:lint"
+  }
+ ],
+ "result": {
+  "item": "sinterklaas:pietenpak_wegwijs_schoenen",
+  "count": 1
+ }
+}

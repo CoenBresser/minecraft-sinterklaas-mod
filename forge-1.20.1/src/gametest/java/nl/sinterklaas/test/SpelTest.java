@@ -11,11 +11,15 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -37,12 +41,14 @@ import nl.sinterklaas.KistLoot;
 import nl.sinterklaas.ModBlokken;
 import nl.sinterklaas.ModEntiteiten;
 import nl.sinterklaas.ModItems;
+import nl.sinterklaas.PietenpakBonus;
 import nl.sinterklaas.SinterklaasMod;
 import nl.sinterklaas.blok.BordBlok;
 import nl.sinterklaas.blok.PakjeBlok;
 import nl.sinterklaas.blok.SchoenBlok;
 import nl.sinterklaas.core.Namen;
 import nl.sinterklaas.core.PietVariant;
+import nl.sinterklaas.core.PietenpakRegels;
 import nl.sinterklaas.entiteit.Piet;
 import nl.sinterklaas.entiteit.Sint;
 import nl.sinterklaas.item.PepernootItem;
@@ -347,6 +353,34 @@ public class SpelTest {
 			ok(test, server.getLootData().getLootTable(kist).getPool("sinterklaas_pakje") != null, "geen pakje in kist: " + kist);
 		}
 		test.succeed();
+	}
+
+	// ------------------------------------------------------------ Pietenpak
+
+	@GameTest(template = RUIMTE, batch = "dec5")
+	public static void pietenpakBeschermtAlsIJzerEnGeeftBonus(GameTestHelper test) {
+		var server = test.getLevel().getServer();
+		for (PietVariant v : PietVariant.values()) {
+			for (PietenpakRegels.Deel deel : PietenpakRegels.Deel.values()) {
+				String naam = PietenpakRegels.naam(v, deel);
+				ok(test, ModItems.PIETENPAK.get(v).get(deel).get() instanceof ArmorItem, "geen harnas: " + naam);
+				ok(test, server.getRecipeManager().byKey(SinterklaasMod.id(naam)).isPresent(), "recept ontbreekt: " + naam);
+			}
+		}
+		test.setBlock(VLOER, Blocks.STONE);
+		ArmorStand standaard = test.spawn(EntityType.ARMOR_STAND, PLEK);
+		EquipmentSlot[] plekken = {EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
+		PietVariant[] pieten = {PietVariant.HOOFD, PietVariant.PAKJES, PietVariant.KOEK, PietVariant.MALLE};
+		for (int i = 0; i < 4; i++) {
+			standaard.setItemSlot(plekken[i], new ItemStack(ModItems.PIETENPAK.get(pieten[i]).get(PietenpakRegels.Deel.values()[i]).get()));
+		}
+		ok(test, PietenpakBonus.heeftHeelPak(standaard), "een pak van verschillende Pieten telt niet als heel pak");
+		PietenpakBonus.geefBonus(standaard);
+		ok(test, standaard.hasEffect(MobEffects.MOVEMENT_SPEED) && standaard.hasEffect(MobEffects.JUMP), "geen snelheid en sprongkracht");
+		standaard.setItemSlot(EquipmentSlot.HEAD, new ItemStack(Items.IRON_HELMET));
+		ok(test, !PietenpakBonus.heeftHeelPak(standaard), "met een ijzeren helm telt het toch als heel pak");
+		test.succeedWhen(() -> ok(test, standaard.getAttributeValue(Attributes.ARMOR) == 15.0,
+			"het Pietenpak beschermt niet als ijzer (" + standaard.getAttributeValue(Attributes.ARMOR) + ")"));
 	}
 
 	private static int aantalGevallen(GameTestHelper test, Item item) {

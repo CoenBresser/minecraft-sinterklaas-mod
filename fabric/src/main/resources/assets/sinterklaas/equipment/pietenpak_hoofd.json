@@ -1,0 +1,14 @@
+{
+ "layers": {
+  "humanoid": [
+   {
+    "texture": "sinterklaas:pietenpak_hoofd"
+   }
+  ],
+  "humanoid_leggings": [
+   {
+    "texture": "sinterklaas:pietenpak_hoofd"
+   }
+  ]
+ }
+}

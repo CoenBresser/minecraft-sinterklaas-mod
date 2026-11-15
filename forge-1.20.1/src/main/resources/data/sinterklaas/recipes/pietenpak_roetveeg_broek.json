@@ -1,0 +1,19 @@
+{
+ "type": "minecraft:crafting_shapeless",
+ "category": "equipment",
+ "ingredients": [
+  {
+   "item": "minecraft:iron_leggings"
+  },
+  {
+   "item": "minecraft:blue_wool"
+  },
+  {
+   "item": "sinterklaas:lint"
+  }
+ ],
+ "result": {
+  "item": "sinterklaas:pietenpak_roetveeg_broek",
+  "count": 1
+ }
+}

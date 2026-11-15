@@ -1,0 +1,6 @@
+{
+ "parent": "minecraft:item/generated",
+ "textures": {
+  "layer0": "sinterklaas:item/pietenpak_hoofd_jasje"
+ }
+}

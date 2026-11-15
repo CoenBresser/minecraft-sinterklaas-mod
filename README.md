@@ -18,6 +18,7 @@ Voor Minecraft Java, in twee versies: **26.2 met Fabric** en **1.20.1 met Forge*
 - **Pepernoten** en een **bord**: leg tot vier pepernoten op een bord (rechtsklik met een pepernoot). Met een lege hand pak je er weer één af.
 - **Staf**: Sint heeft een gouden staf. Maak er zelf een en rechtsklik: alle Pieten binnen 24 blokken komen 15 seconden lang naar je toe.
 - **Mijter**: draag hem op je hoofd. Hij is lekker hoog, beschermt net zo goed als een ijzeren helm, en er zit een lange witte baard aan. Sint draagt hem zelf ook.
+- **Pietenpak**: verkleed je als Piet! Voor elke Piet is er een pak in zijn eigen kleuren, met vier delen: **muts** (baret met veer), **jasje**, **broek** en **schoenen**. Het pak beschermt net zo goed als ijzer en repareer je ook met ijzer. Heb je **het hele pak** aan, dan ben je een echte Piet: je loopt sneller en springt hoger (handig op het dak). De delen mogen van verschillende Pieten zijn. Je eigen gezicht blijft gewoon zichtbaar.
 
 ### Hoe kom je aan pakjes?
 
@@ -38,6 +39,18 @@ Voor Minecraft Java, in twee versies: **26.2 met Fabric** en **1.20.1 met Forge*
 | Schoen | draad linksboven, 2 leer eronder |
 | Bord (2) | klei, blauwe kleurstof, klei op een rij |
 | Staf | 3 goudstaven boven elkaar, en eentje links daarvan op de bovenste rij |
+| Pietenpak (muts, jasje, broek, schoenen) | het ijzeren deel (helm, borstplaat, beenbescherming, laarzen) + wol in de kleur van de Piet + lint |
+
+Welke wol hoort bij welke Piet:
+
+| Piet | Wol |
+|---|---|
+| Roetveegpiet | blauw |
+| Hoofdpiet | zwart |
+| Pakjespiet | groen |
+| Wegwijspiet | cyaan |
+| Koekpiet | bruin |
+| Malle Pietje | roze |
 
 ## Installeren (voor spelers)
 

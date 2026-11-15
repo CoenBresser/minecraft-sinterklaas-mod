@@ -18,6 +18,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -42,6 +43,7 @@ import nl.sinterklaas.blok.BordBlok;
 import nl.sinterklaas.blok.PakjeBlok;
 import nl.sinterklaas.blok.SchoenBlok;
 import nl.sinterklaas.core.PietVariant;
+import nl.sinterklaas.core.PietenpakRegels;
 import nl.sinterklaas.entiteit.Piet;
 import nl.sinterklaas.entiteit.Sint;
 
@@ -116,6 +118,7 @@ public class ProefTest implements FabricClientGameTest {
 			staf(context, server);
 			lootEnRecepten(server);
 			mijter(context, server);
+			pietenpak(context, server);
 			seizoen(context, server);
 
 			server.runCommand("sinterklaas datum reset");
@@ -643,5 +646,74 @@ public class ProefTest implements FabricClientGameTest {
 		server.runCommand("item replace entity @p hotbar.7 with sinterklaas:mijter");
 		context.waitTicks(10);
 		context.takeScreenshot("fase2-7-spawn-eieren");
+	}
+
+	private void pietenpak(ClientGameTestContext context, TestServerContext server) {
+		server.runCommand("clear @p");
+		server.runCommand("effect clear @p");
+		for (PietVariant v : PietVariant.values()) {
+			for (PietenpakRegels.Deel deel : PietenpakRegels.Deel.values()) {
+				String naam = PietenpakRegels.naam(v, deel);
+				ok(BuiltInRegistries.ITEM.containsKey(SinterklaasMod.id(naam)), "het voorwerp " + naam + " bestaat");
+				boolean recept = server.computeOnServer(s ->
+					s.getRecipeManager().byKey(ResourceKey.create(Registries.RECIPE, SinterklaasMod.id(naam))).isPresent());
+				ok(recept, "recept '" + naam + "' is geladen");
+			}
+		}
+
+		// Het hele pak van de Roetveegpiet aan: even sterk als een ijzeren harnas
+		String[][] plekken = {{"head", "muts"}, {"chest", "jasje"}, {"legs", "broek"}, {"feet", "schoenen"}};
+		for (String[] plek : plekken) {
+			server.runCommand("item replace entity @p armor." + plek[0] + " with sinterklaas:pietenpak_roetveeg_" + plek[1]);
+		}
+		context.waitTicks(PietenpakRegels.CONTROLE_TIKKEN + 5);
+		ok(server.computeOnServer(s -> speler(s).getArmorValue()) == 15, "het hele Pietenpak beschermt als ijzer (15 pantserpunten)");
+		ok(server.computeOnServer(s -> speler(s).hasEffect(MobEffects.SPEED) && speler(s).hasEffect(MobEffects.JUMP_BOOST)),
+			"met het hele Pietenpak loop je sneller en spring je hoger");
+
+		// Delen van verschillende Pieten mag ook
+		server.runCommand("effect clear @p");
+		server.runCommand("item replace entity @p armor.head with sinterklaas:pietenpak_malle_muts");
+		server.runCommand("item replace entity @p armor.feet with sinterklaas:pietenpak_koek_schoenen");
+		context.waitTicks(PietenpakRegels.CONTROLE_TIKKEN + 5);
+		ok(server.computeOnServer(s -> speler(s).hasEffect(MobEffects.SPEED)), "een pak van verschillende Pieten geeft ook de bonus");
+
+		// Eén deel uit: geen bonus meer
+		server.runCommand("item replace entity @p armor.head with minecraft:iron_helmet");
+		server.runCommand("effect clear @p");
+		context.waitTicks(PietenpakRegels.CONTROLE_TIKKEN + 5);
+		ok(server.computeOnServer(s -> !speler(s).hasEffect(MobEffects.SPEED)), "zonder het hele pak is er geen bonus");
+		ok(server.computeOnServer(s -> speler(s).getArmorValue()) == 15, "een Pietenmuts beschermt net zo goed als een ijzeren helm");
+
+		// Screenshots: de speler in het pak van de Pakjespiet, en de zes pakken op harnasstandaards
+		for (String[] plek : plekken) {
+			server.runCommand("item replace entity @p armor." + plek[0] + " with sinterklaas:pietenpak_pakjes_" + plek[1]);
+		}
+		int i = 0;
+		for (PietVariant v : PietVariant.values()) {
+			int x = -5 + 2 * i++;
+			String standaard = "@e[type=minecraft:armor_stand,tag=pak_" + v.id() + "]";
+			server.runCommand("summon minecraft:armor_stand " + x + ".5 149 4.5 {Rotation:[180f,0f],ShowArms:1b,Tags:[\"pak_" + v.id() + "\"]}");
+			for (String[] plek : plekken) {
+				server.runCommand("item replace entity " + standaard + " armor." + plek[0] + " with sinterklaas:pietenpak_" + v.id() + "_" + plek[1]);
+			}
+		}
+		for (PietenpakRegels.Deel deel : PietenpakRegels.Deel.values()) {
+			server.runCommand("item replace entity @p hotbar." + deel.ordinal() + " with sinterklaas:pietenpak_hoofd_" + deel.id());
+		}
+		server.runCommand("tp @p 0.5 149 0.5 0 10");
+		context.waitTicks(20);
+		context.takeScreenshot("fase7-1-zes-pietenpakken");
+		server.runCommand("tp @p 0.5 149 -2.5 0 5");
+		context.runOnClient(mc -> mc.options.setCameraType(CameraType.THIRD_PERSON_FRONT));
+		context.waitTicks(20);
+		context.takeScreenshot("fase7-2-speler-in-pietenpak-van-voren");
+		context.runOnClient(mc -> mc.options.setCameraType(CameraType.THIRD_PERSON_BACK));
+		context.waitTicks(15);
+		context.takeScreenshot("fase7-3-speler-in-pietenpak-van-achter");
+		context.runOnClient(mc -> mc.options.setCameraType(CameraType.FIRST_PERSON));
+		server.runCommand("kill @e[type=minecraft:armor_stand]");
+		server.runCommand("clear @p");
+		server.runCommand("effect clear @p");
 	}
 }

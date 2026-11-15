@@ -1,0 +1,6 @@
+{
+ "parent": "minecraft:item/generated",
+ "textures": {
+  "layer0": "sinterklaas:item/pietenpak_malle_schoenen"
+ }
+}

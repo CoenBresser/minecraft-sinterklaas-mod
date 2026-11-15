@@ -1,0 +1,13 @@
+{
+ "type": "minecraft:crafting_shapeless",
+ "category": "equipment",
+ "ingredients": [
+  "minecraft:iron_helmet",
+  "minecraft:green_wool",
+  "sinterklaas:lint"
+ ],
+ "result": {
+  "id": "sinterklaas:pietenpak_pakjes_muts",
+  "count": 1
+ }
+}

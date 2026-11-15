@@ -1,0 +1,13 @@
+{
+ "type": "minecraft:crafting_shapeless",
+ "category": "equipment",
+ "ingredients": [
+  "minecraft:iron_boots",
+  "minecraft:brown_wool",
+  "sinterklaas:lint"
+ ],
+ "result": {
+  "id": "sinterklaas:pietenpak_koek_schoenen",
+  "count": 1
+ }
+}
