@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.8.0](https://github.com/CoenBresser/minecraft-sinterklaas-mod/compare/v0.7.0...v0.8.0) (2026-11-15)
+
+
+### Functionaliteit
+
+* **pietenpak:** verkleed je als Piet met een harnas in de kleuren van elke Piet ([ac0ad51](https://github.com/CoenBresser/minecraft-sinterklaas-mod/commit/ac0ad514f94ca3ef366f159f8a72ad7165a0ccb9))
+* **piet:** gewoon spawn-ei waar een willekeurige Piet uit komt ([916c865](https://github.com/CoenBresser/minecraft-sinterklaas-mod/commit/916c86598bd601c8bb735337be8ccc4d28e5326d))
+* **piet:** Pieten zijn gewone mensfiguren in plaats van pillagers ([a9302c7](https://github.com/CoenBresser/minecraft-sinterklaas-mod/commit/a9302c7b12c7b796f29db9fd16cdd16f61da7db9))
+* **sint:** maak de onderkant van het mijter-ei ronder ([37ad067](https://github.com/CoenBresser/minecraft-sinterklaas-mod/commit/37ad0672f043009801a45636b754635a58adefcb))
+* **sint:** spawn-ei van Sinterklaas in de vorm van zijn mijter ([3464b2f](https://github.com/CoenBresser/minecraft-sinterklaas-mod/commit/3464b2fedf8c348cc1295cc59edc41aaf36330f8))
+
+
+### Opgeloste problemen
+
+* laat CurseForge Fabric API zelf downloaden en leg de modlijst uit ([e827226](https://github.com/CoenBresser/minecraft-sinterklaas-mod/commit/e827226f2984674abb11baa4a22a9d0e23c04768))
+* laat de CurseForge-app Fabric API zelf downloaden in het Fabric-modpack ([0fe70c9](https://github.com/CoenBresser/minecraft-sinterklaas-mod/commit/0fe70c93379b666011fb5ab26d88959495bec688))
+
 ## [0.7.0](https://github.com/CoenBresser/minecraft-sinterklaas-mod/compare/v0.6.0...v0.7.0) (2026-11-15)
 
 
